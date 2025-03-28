@@ -37,6 +37,11 @@ public:
         return position;
     }
 
+    float getXPos()
+    {
+        return position.x;
+    }
+
     void updatePos(float speedX, float speedY)
     {
         position.x += speedX;
@@ -137,7 +142,7 @@ void DrawGame(Player* player)
 
     DrawTexture(bgText, 0, 50, WHITE);
     */
-    ClearBackground(BLACK);
+    ClearBackground(GREEN);
 
     Vector2 playersize = { 30, 30 };
 
@@ -184,7 +189,7 @@ void DrawMap()
 
 void UpdateCameraCenterInsideMap(Camera2D* camera, Player* player, int width, int height)
 {
-    camera->target = player->getPos();
+    camera->target.x = player->getXPos();
 
     camera->offset.x = width / 2.0f;
     camera->offset.y = height / 2.0f;
