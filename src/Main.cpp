@@ -22,7 +22,7 @@ private:
     Color color;
 
 public:
-    Player();
+    Player() {};
 
     Player(int playerHp, Vector2 posVector, Color color)
     {
@@ -189,7 +189,17 @@ void DrawMap()
 
 void UpdateCameraCenterInsideMap(Camera2D* camera, Player* player, int width, int height)
 {
-    camera->target.x = player->getXPos();
+
+    //camera->target = player->getPos(); // La cámara sigue al jugador
+    //camera->offset = Vector2{ (screenWidth / 2), (screenHeight / 2) }; // La cámara se centra en el jugador
+    //camera->rotation = 0.0f;
+    //camera->zoom = 1.0f;
+
+    //camera->target = player->getPos();
+}
+    
+    
+    /* camera->target.x = player->getXPos();
 
     camera->offset.x = width / 2.0f;
     camera->offset.y = height / 2.0f;
@@ -203,7 +213,7 @@ void UpdateCameraCenterInsideMap(Camera2D* camera, Player* player, int width, in
     if (max.y < height) camera->offset.y = height - (max.y - height / 2);
     if (min.x > 0) camera->offset.x = width / 2 - min.x;
     if (min.y > 0) camera->offset.y = height / 2 - min.y;
-}
+}*/
 
 
 /*void UnloadGame(void)
