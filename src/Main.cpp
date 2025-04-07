@@ -6,48 +6,48 @@
 
 #include <vector>   
 
-#include <iostream>"
+#include <iostream>
 using namespace std;
 
 
 #define PLAYER_SPEED    6.0f
 #define PLAYER_MAX_BOMBS    5
 
-class Player
-{
-private:
-    int playerHp;
-    Vector2 position;
-    float acceleration;
-    Color color;
-
-public:
-    Player() {};
-
-    Player(int playerHp, Vector2 posVector, Color color)
-    {
-        position = posVector;
-        this->color = color;
-        this->playerHp = playerHp;
-
-    }
-
-    Vector2 getPos()
-    {
-        return position;
-    }
-
-    float getXPos()
-    {
-        return position.x;
-    }
-
-    void updatePos(float speedX, float speedY)
-    {
-        position.x += speedX;
-        position.y += speedY;
-    }
-};
+//class Player
+//{
+//private:
+//    int playerHp;
+//    Vector2 position;
+//    float acceleration;
+//    Color color;
+//
+//public:
+//    Player() {};
+//
+//    Player(int playerHp, Vector2 posVector, Color color)
+//    {
+//        position = posVector;
+//        this->color = color;
+//        this->playerHp = playerHp;
+//
+//    }
+//
+//    Vector2 getPos()
+//    {
+//        return position;
+//    }
+//
+//    float getXPos()
+//    {
+//        return position.x;
+//    }
+//
+//    void updatePos(float speedX, float speedY)
+//    {
+//        position.x += speedX;
+//        position.y += speedY;
+//    }
+//};
 
 static const float screenWidth = 800;
 static const float screenHeight = 450;
