@@ -39,9 +39,7 @@ void Bomb::Explode(Map& map)
 	int centerX = pos.x / 40;
 	int centerY = pos.y / 40;
 
-	Vector2  explosionPos = { centerX * 40, centerY * 40 };
-	Explosion newExplosion(explosionPos);
-	explosions.push_back(newExplosion);
+	explosions.push_back(Explosion({ centerX * 40.0f, centerY * 40.0f }));
 
 	int range = 1; // + RangeModifier;
 
