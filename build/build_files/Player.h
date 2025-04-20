@@ -1,8 +1,15 @@
 #pragma once
 
 #include "Map.h"
+#include "Bomb.h"
 
+#include <iostream>
+#include <vector>
 #include "raylib.h"
+
+using namespace std;
+
+
 
 class Player
 {
@@ -11,6 +18,8 @@ public:
 
 	void UpdatePlayer(Map& map);
 	void DrawPlayer();
+
+	vector<Bomb> bombs;
 
 private:
 	Rectangle rect;

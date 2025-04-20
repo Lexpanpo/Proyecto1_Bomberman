@@ -38,9 +38,32 @@ void Player::UpdatePlayer(Map& map)
         rect = oldRect;
         //pos = oldPos;
     }
+
+    if (IsKeyPressed(KEY_SPACE))
+    {
+        Vector2 bombPos = { (rect.x / 40) * 40, (rect.y / 40) * 40 };
+        //Bomb newBomb(bombPos);
+
+        bombs.push_back(Bomb(bombPos));
+        //newBomb.DrawBomb();
+    }
+
+    for (int i = 0; i < bombs.size();)
+    {
+        if (bombs[i].UpdateState(GetFrameTime(), map))
+        {
+            bombs.erase(bombs.begin() + i);
+        }
+        else
+        {
+            i++;
+        }
+    }
 }
 
 void Player::DrawPlayer()
 {
+    for (const Bomb& b : bombs) b.DrawBomb();
+
     DrawRectangleRec(rect, RED);
 }
