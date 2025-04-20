@@ -56,11 +56,11 @@ void Bomb::Explode(Map& map)
 
 			if (map.BreakTile(x, centerY))
 			{
-					break;
+				break;
 			}
 
 			explosions.push_back(Explosion({ x * 40.0f, centerY * 40.0f }));
-		}		
+		}
 	}
 
 	for (int dy = -1; dy <= 1; dy++)
