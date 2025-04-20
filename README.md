@@ -1,5 +1,5 @@
 # Proyecto I
-Link al github,
+[Github link](https://github.com/Lexpanpo/Proyecto1_Bomberman)
 Link al video de 1min(yt)
 
 ## Team Members
