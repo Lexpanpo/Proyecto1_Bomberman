@@ -20,4 +20,4 @@ Clear each maze-like stage by defeating all enemies using bombs, then find the h
 * Collect power-ups hidden in blocks to increase your abilities.
 
 Use the arrow keys to move Bomberman up, down, left, and right. 
-Press Z or X to place a bomb. The Enter or Space key is used to start or pause the game.
+Press space to place a bomb. The [] key is used to start or pause the game.
