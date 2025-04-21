@@ -58,17 +58,6 @@ void Player::UpdatePlayer(Map& map)
         {
             i++;
         }
-    }    
-
-    if (map.IsDoorSpawned() && CheckCollisionRecs(rect, { map.GetDoorPos().x, map.GetDoorPos().y, 40, 40 }))
-    {
-        if (IsKeyPressed(KEY_ENTER))
-        {
-            //  WINSCREEN
-            CloseWindow();
-        }
-        
-
     }
 }
 

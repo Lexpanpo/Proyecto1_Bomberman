@@ -95,17 +95,29 @@ void Game::Run()
 			}
 
 			BeginMode2D(camera);
+
 			map.DrawMap();
 			player.DrawPlayer();
+
+			for (int i = 0; i < explosions.size();)
+			{
+				if (explosions[i].UpdateStatus(GetFrameTime()))
+				{
+					explosions.erase(explosions.begin() + i);
+				}
+				else
+				{
+					i++;
+				}
+			}
+			
+			for (const Explosion& e : explosions) e.DrawExplosion();
+			
 			EndMode2D();
+			EndDrawing();
+
 			break;
-		}
-
-		for (const Explosion& e : explosions) e.DrawExplosion();
-
-		EndMode2D();
-
-		EndDrawing();
+		}		
 	}
 
 	UnloadTexture(titleScreen);
