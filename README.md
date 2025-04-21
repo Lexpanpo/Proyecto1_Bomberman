@@ -1,6 +1,6 @@
 # Proyecto I
-[Github link](https://github.com/Lexpanpo/Proyecto1_Bomberman)
-Link al video de 1min(yt)
+* [Github link](https://github.com/Lexpanpo/Proyecto1_Bomberman)
+* [1 min video](https://youtu.be/qd4kzFKo_zM)
 
 ## Team Members
 * Pol Cuenca Dueñas, [Lexpanpo](https://github.com/Lexpanpo)
