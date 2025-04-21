@@ -112,7 +112,42 @@ void Game::Run()
                     }
                 }
 
-                for (const Explosion& e : explosions) e.DrawExplosion();
+                for (const Explosion& e : explosions)
+                {
+                    e.DrawExplosion();
+
+                    if (CheckCollisionRecs(player.GetPlayerRect(), e.GetExplosionRect()))
+                    {
+                        player.TakeDamage();
+
+                        if (player.GetCurrentHp() <= 0)
+                        {
+                            // Pantalla de game over
+                            CloseWindow();
+                        }
+                        else
+                        {
+                            player.SetPlayerPos(); // cambiar a reset player pos
+                            // resetear mapa
+                            explosions.clear();
+                        }
+
+                        break;
+                    }
+                }
+
+                if (IsKeyReleased(KEY_P))
+                {
+                    player.SetPlayerPos();
+                    player.TakeDamage();
+                    //cout << player.GetCurrentHp() << endl;
+                    //map.ClearMap();
+                }
+
+                if (player.GetCurrentHp() <= 0)
+                {
+                    CloseWindow();
+                }
 
                 EndMode2D();
                 break;

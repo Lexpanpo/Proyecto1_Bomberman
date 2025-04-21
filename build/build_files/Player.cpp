@@ -82,3 +82,33 @@ Vector2 Player::GetPlayerPos()
     Vector2 position = { rect.x, rect.y };
     return position;
 }
+
+void Player::SetPlayerPos()
+{
+    // Setear pos en x por valor dado
+    // Setear pos en y por valor dado
+
+    rect.x = 45;
+    rect.y = 45;
+
+    wasHit = false;
+}
+
+Rectangle Player::GetPlayerRect()
+{
+    return rect;
+}
+
+void Player::TakeDamage()
+{
+    if (!wasHit)
+    {
+        wasHit = true;
+        playerHp--;
+    }
+}
+
+int Player::GetCurrentHp() const
+{
+    return playerHp;
+}

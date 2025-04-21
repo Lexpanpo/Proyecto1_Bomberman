@@ -23,9 +23,19 @@ public:
 
 	Vector2 GetPlayerPos();
 
+	void SetPlayerPos();
+
+	Rectangle GetPlayerRect();
+
+	void TakeDamage();
+	bool wasHit = false;
+	int GetCurrentHp() const;
+
 private:
 	Rectangle rect;
 	Vector2 pos;
 	const float playerSpeed = 2.0f;
+
+	int playerHp = 3;
 };
 

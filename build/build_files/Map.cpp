@@ -142,3 +142,24 @@ Vector2 Map::GetDoorPos()
 {
 	return doorPos;
 }
+
+//void Map::ClearMap()
+//{
+//	for (int y = 0; y < 13; y++)
+//	{
+//		for (int x = 0; x < 31; x++)
+//		{
+//			if (grid[y][x] == 2)
+//			{
+//				grid[y][x] == 0;
+//
+//				cout << "casilla eliminada";
+//			}
+//		}
+//	}
+//}
+//
+//void Map::ResetLevel()
+//{
+//	DrawMap();
+//}

@@ -13,3 +13,8 @@ void Explosion::DrawExplosion() const
 {
 	DrawRectangle(pos.x + 5, pos.y + 5, 30, 30, RED);
 }
+
+Rectangle Explosion::GetExplosionRect() const
+{
+	return Rectangle{ pos.x + 5, pos.y + 5, 30, 30 };
+}

@@ -10,6 +10,7 @@ public:
 	
 	bool UpdateStatus(float deltaTime);
 	void DrawExplosion() const;
+	Rectangle GetExplosionRect() const;
 
 	Vector2 pos;
 
