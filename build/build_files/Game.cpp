@@ -53,14 +53,14 @@ void Game::Run()
             switch (currentState)
             {
             case SPLASH:
-                DrawText("This is a recreation of Bomberman NES. Press ENTER to continue.", 300, 400, 30, WHITE);
-                DrawText("Proyecto I, Disseny i desenvolupament de videojocs, CITM Terrassa.", 400, 500, 20, WHITE);
-                DrawText("Pol Cuenca, Andrea Velez, Daniel Castillero. Tutor: Alejandro Paris Gomez ", 400, 600, 20, WHITE);
+                DrawText("This is a recreation of Bomberman NES. Press ENTER to continue.", 100, 350, 40, WHITE);
+                DrawText("Proyecto I, Disseny i desenvolupament de videojocs, CITM Terrassa.", 200, 450, 30, WHITE);
+                DrawText("Pol Cuenca, Andrea Velez, Daniel Castillero. Tutor: Alejandro Paris Gomez ", 200, 500, 30, WHITE);
                 if (IsKeyPressed(KEY_ENTER)) currentState = TITLE;
                 break;
 
             case TITLE:
-                DrawTexture(titleScreen, 0, 0, WHITE);
+                DrawTextureEx(titleScreen,{ 350, 0 }, 0, 3.5, WHITE);
                 DrawText("Presiona ENTER para comenzar", 500, 850, 25, WHITE);
                 if (IsKeyPressed(KEY_ENTER)) currentState = GAMEPLAY;
                 break;
