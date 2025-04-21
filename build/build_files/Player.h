@@ -21,6 +21,8 @@ public:
 
 	vector<Bomb> bombs;
 
+	Vector2 GetPlayerPos();
+
 private:
 	Rectangle rect;
 	Vector2 pos;

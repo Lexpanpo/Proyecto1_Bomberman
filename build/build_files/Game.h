@@ -1,5 +1,7 @@
 #pragma once
 
+#include "raylib.h"
+
 class Game
 {
 public:
@@ -7,5 +9,8 @@ public:
 	~Game();
 
 	void Run();
+
+private:
+	Camera2D camera;
 };
 

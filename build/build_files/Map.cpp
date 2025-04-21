@@ -78,7 +78,7 @@ bool Map::CheckCollisions(Rectangle& playerRect)
 
 bool Map::BreakTile(int gridX, int gridY)
 {
-	if (gridX < 0 || gridX >= 20 || gridY < 0 || gridY >= 15)
+	if (gridX < 0 || gridX >= 31 || gridY < 0 || gridY >= 13)
 	{
 		return true;
 	}

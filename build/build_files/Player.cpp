@@ -67,3 +67,9 @@ void Player::DrawPlayer()
 
     DrawRectangleRec(rect, RED);
 }
+
+Vector2 Player::GetPlayerPos()
+{
+    Vector2 position = { rect.x, rect.y };
+    return position;
+}
