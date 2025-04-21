@@ -96,6 +96,8 @@ void Game::Run()
 
 		for (const Explosion& e : explosions) e.DrawExplosion();
 
+		
+
 		EndMode2D();
 
 		EndDrawing();
