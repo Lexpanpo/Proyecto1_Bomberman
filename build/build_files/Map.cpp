@@ -90,7 +90,7 @@ bool Map::BreakTile(int gridX, int gridY)
 
 	if (grid[gridY][gridX] == 2)
 	{
-		grid[gridY][gridX] == 0;
+		grid[gridY][gridX] = 0;
 
 		return true;
 	}
