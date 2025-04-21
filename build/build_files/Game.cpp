@@ -38,69 +38,92 @@ void Game::Run()
     Player player;
     Map map;
 
-    while (!WindowShouldClose())
-    {
-        UpdateMusicStream(music);
-
-        player.UpdatePlayer(map);
 
 
-        Vector2 targetPos = player.GetPlayerPos();
-        //cout << "PosX: " << targetPos.x << endl;
-        //cout << "PosY: " << targetPos.y << endl;
+    enum GameState { SPLASH, TITLE, GAMEPLAY };
+    GameState currentState = SPLASH;
+    Texture2D titleScreen = LoadTexture("resources/bombermanSprites/UI/NES - Bomberman - Title Screen & Text.png");
 
-        camera.target = targetPos;
-
-        float mapWidth = 31 * 40;
-        float mapHeight = 13 * 40;
-        float halfWidth = GetScreenWidth() / (2.0f * camera.zoom);
-        float halfHeight = GetScreenHeight() / (2.0f * camera.zoom);
-
-        if (camera.target.x < halfWidth)
+        while (!WindowShouldClose())
         {
-            camera.target.x = halfWidth;
-        }
-        if (camera.target.y < halfHeight)
-        {
-            camera.target.y = halfHeight;
-        }
-        if (camera.target.x > mapWidth - halfWidth)
-        {
-            camera.target.x = mapWidth - halfWidth;
-        }
-        if (camera.target.y > mapHeight - halfHeight)
-        {
-            camera.target.y = mapHeight - halfHeight;
-        }
+            UpdateMusicStream(music);
+            BeginDrawing();
+            ClearBackground(BLACK);
 
-        BeginDrawing();
-        ClearBackground(BLACK);
-
-        BeginMode2D(camera);
-
-        map.DrawMap();
-        player.DrawPlayer();
-
-        for (int i = 0; i < explosions.size();)
-        {
-            if (explosions[i].UpdateStatus(GetFrameTime()))
+            switch (currentState)
             {
-                explosions.erase(explosions.begin() + i);
+            case SPLASH:
+                DrawText("This is a recreation of Bomberman NES. Press ENTER to continue.", 300, 400, 30, WHITE);
+                DrawText("Proyecto I, Disseny i desenvolupament de videojocs, CITM Terrassa.", 400, 500, 20, WHITE);
+                DrawText("Pol Cuenca, Andrea Velez, Daniel Castillero. Tutor: Alejandro Paris Gomez ", 400, 600, 20, WHITE);
+                if (IsKeyPressed(KEY_ENTER)) currentState = TITLE;
+                break;
+
+            case TITLE:
+                DrawTexture(titleScreen, 0, 0, WHITE);
+                DrawText("Presiona ENTER para comenzar", 500, 850, 25, WHITE);
+                if (IsKeyPressed(KEY_ENTER)) currentState = GAMEPLAY;
+                break;
+
+            case GAMEPLAY:
+
+                player.UpdatePlayer(map);
+                Vector2 targetPos = player.GetPlayerPos();
+                camera.target = targetPos;
+
+                float mapWidth = 31 * 40;
+                float mapHeight = 13 * 40;
+                float halfWidth = GetScreenWidth() / (2.0f * camera.zoom);
+                float halfHeight = GetScreenHeight() / (2.0f * camera.zoom);
+
+                if (camera.target.x < halfWidth)
+                {
+                    camera.target.x = halfWidth;
+                }
+                if (camera.target.y < halfHeight)
+                {
+                    camera.target.y = halfHeight;
+                }
+                if (camera.target.x > mapWidth - halfWidth)
+                {
+                    camera.target.x = mapWidth - halfWidth;
+                }
+                if (camera.target.y > mapHeight - halfHeight)
+                {
+                    camera.target.y = mapHeight - halfHeight;
+                }
+                BeginDrawing();
+                ClearBackground(BLACK);
+
+                BeginMode2D(camera);
+
+                map.DrawMap();
+                player.DrawPlayer();
+
+                for (int i = 0; i < explosions.size();)
+                {
+                    if (explosions[i].UpdateStatus(GetFrameTime()))
+                    {
+                        explosions.erase(explosions.begin() + i);
+                    }
+                    else
+                    {
+                        i++;
+                    }
+                }
+
+                for (const Explosion& e : explosions) e.DrawExplosion();
+
+                EndMode2D();
+                break;
             }
-            else
-            {
-                i++;
-            }
+
+            EndDrawing();
         }
 
-        for (const Explosion& e : explosions) e.DrawExplosion();
-
-        EndMode2D();
-
-        EndDrawing();
-    }
-
-    UnloadMusicStream(music);
-    CloseAudioDevice();
-    CloseWindow();
+        UnloadTexture(titleScreen);
+        UnloadMusicStream(music);
+        CloseAudioDevice();
+        CloseWindow();
+    
 }
