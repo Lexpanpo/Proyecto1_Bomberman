@@ -19,6 +19,7 @@ Game::Game()
 
 	InitAudioDevice();	
 	music = LoadMusicStream("resources/bombermanAudio/music/StageTheme.wav");
+	SetMusicVolume(music, 0.2f);
 	PlayMusicStream(music);
 
 	camera.target = { 0, 0 };
