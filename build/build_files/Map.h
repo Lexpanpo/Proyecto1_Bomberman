@@ -15,8 +15,14 @@ public:
 
 	void PlaceSoftBlocks();
 
+	bool IsDoorSpawned();
+	Vector2 GetDoorPos();
+
 private:
 	int grid[13][31];
+
+	bool doorSpawned; 
+	Vector2 doorPos;
 };
 
 
