@@ -12,5 +12,6 @@ public:
 
 private:
 	Camera2D camera;
+	Music music;
 };
 

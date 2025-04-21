@@ -17,6 +17,10 @@ Game::Game()
 	InitWindow(1600, 900, "Bomberman - Eldiablo");
 	SetTargetFPS(60);
 
+	InitAudioDevice();	
+	music = LoadMusicStream("resources/bombermanAudio/music/StageTheme.wav");
+	PlayMusicStream(music);
+
 	camera.target = { 0, 0 };
 	camera.offset = { GetScreenWidth() / 2.0f, GetScreenHeight() / 2.0f };
 	camera.rotation = 0;
@@ -36,6 +40,8 @@ void Game::Run()
 
 	while (!WindowShouldClose())
 	{
+		UpdateMusicStream(music);
+
 		player.UpdatePlayer(map);
 
 		
@@ -93,4 +99,8 @@ void Game::Run()
 
 		EndDrawing();
 	}
+
+	UnloadMusicStream(music);
+	CloseAudioDevice();
+	CloseWindow();
 }
