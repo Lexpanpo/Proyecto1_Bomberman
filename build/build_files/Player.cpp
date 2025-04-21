@@ -64,8 +64,10 @@ void Player::UpdatePlayer(Map& map)
     {
         if (IsKeyPressed(KEY_ENTER))
         {
-            //  WINSCREEN
-            CloseWindow();
+            hasWin = true;
+            
+            // CloseWindow();
+
         }
     }
 }
@@ -111,4 +113,9 @@ void Player::TakeDamage()
 int Player::GetCurrentHp() const
 {
     return playerHp;
+}
+
+bool Player::victoryStatus()
+{
+    return hasWin;
 }

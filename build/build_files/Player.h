@@ -31,11 +31,14 @@ public:
 	bool wasHit = false;
 	int GetCurrentHp() const;
 
+	bool victoryStatus();
 private:
 	Rectangle rect;
 	Vector2 pos;
 	const float playerSpeed = 2.0f;
 
 	int playerHp = 3;
+
+	bool hasWin = false;
 };
 

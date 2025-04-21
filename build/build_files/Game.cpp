@@ -40,9 +40,10 @@ void Game::Run()
 
 
 
-    enum GameState { SPLASH, TITLE, GAMEPLAY };
+    enum GameState { SPLASH, TITLE, GAMEPLAY, WIN, DEATH};
     GameState currentState = SPLASH;
     Texture2D titleScreen = LoadTexture("resources/bombermanSprites/UI/NES - Bomberman - Title Screen & Text.png");
+    Texture2D WinScreen = LoadTexture("resources/bombermanSprites/UI/NES- Bomberman - Win screen.png");
 
         while (!WindowShouldClose())
         {
@@ -53,20 +54,25 @@ void Game::Run()
             switch (currentState)
             {
             case SPLASH:
+            {
                 DrawText("This is a recreation of Bomberman NES. Press ENTER to continue.", 100, 350, 40, WHITE);
                 DrawText("Proyecto I, Disseny i desenvolupament de videojocs, CITM Terrassa.", 200, 450, 30, WHITE);
                 DrawText("Pol Cuenca, Andrea Velez, Daniel Castillero. Tutor: Alejandro Paris Gomez ", 200, 500, 30, WHITE);
                 if (IsKeyPressed(KEY_ENTER)) currentState = TITLE;
                 break;
-
+            }
+               
             case TITLE:
-                DrawTextureEx(titleScreen,{ 350, 0 }, 0, 3.5, WHITE);
+            {
+                DrawTextureEx(titleScreen, { 350, 0 }, 0, 3.5, WHITE);
                 DrawText("Presiona ENTER para comenzar", 500, 850, 25, WHITE);
                 if (IsKeyPressed(KEY_ENTER)) currentState = GAMEPLAY;
                 break;
+            }
+              
 
             case GAMEPLAY:
-
+            {
                 player.UpdatePlayer(map);
                 Vector2 targetPos = player.GetPlayerPos();
                 camera.target = targetPos;
@@ -122,8 +128,8 @@ void Game::Run()
 
                         if (player.GetCurrentHp() <= 0)
                         {
-                            // Pantalla de game over
-                            CloseWindow();
+                            currentState = DEATH;
+                            // CloseWindow();
                         }
                         else
                         {
@@ -146,11 +152,32 @@ void Game::Run()
 
                 if (player.GetCurrentHp() <= 0)
                 {
-                    CloseWindow();
+                    // CloseWindow();
+                    currentState = DEATH;
                 }
-
+                if (player.victoryStatus())
+                {
+                    currentState = WIN;
+                }
                 EndMode2D();
                 break;
+            }
+               
+
+            case WIN:
+            {
+                DrawTextureEx(WinScreen, { 300, 0 }, 0, 1.5, WHITE);
+                if (IsKeyPressed(KEY_ENTER)) CloseWindow();
+                break;
+            }
+
+            case DEATH:
+            {
+                DrawText("You Lost", 700, 425, 25, WHITE);
+                if (IsKeyPressed(KEY_ENTER)) CloseWindow();
+                break;
+            }
+              
             }
 
             EndDrawing();
