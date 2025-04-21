@@ -79,6 +79,15 @@ void Game::Run()
 			break;
 		}
 
+<<<<<<< HEAD
+=======
+		for (const Explosion& e : explosions) e.DrawExplosion();
+
+		
+
+		EndMode2D();
+
+>>>>>>> 957f3f62fa69d0641498c4eedf9e26af4621253c
 		EndDrawing();
 	}
 

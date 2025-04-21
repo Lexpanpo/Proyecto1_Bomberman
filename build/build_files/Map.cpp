@@ -28,6 +28,8 @@ Map::Map()
 
 	PlaceSoftBlocks();
 
+	doorSpawned = false;
+	doorPos = { -1, -1 };
 }
 
 void Map::DrawMap() const 
@@ -52,6 +54,11 @@ void Map::DrawMap() const
 				DrawRectangle(x * 40, y * 40, 40, 40, color);
 			}
 		}
+	}
+
+	if (doorSpawned)
+	{
+		DrawRectangleV(doorPos, { 40,40 }, BLUE);
 	}
 }
 
@@ -92,6 +99,12 @@ bool Map::BreakTile(int gridX, int gridY)
 	{
 		grid[gridY][gridX] = 0;
 
+		if (!doorSpawned && GetRandomValue(1, 5) == 1)
+		{
+			doorPos = { gridX * 40.0f, gridY * 40.0f };
+			doorSpawned = true;
+		}
+
 		return true;
 	}
 
@@ -118,4 +131,14 @@ void Map::PlaceSoftBlocks()
 			}
 		}
 	}
+}
+
+bool Map::IsDoorSpawned()
+{
+	return doorSpawned;
+}
+
+Vector2 Map::GetDoorPos()
+{
+	return doorPos;
 }
