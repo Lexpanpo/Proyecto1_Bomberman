@@ -72,6 +72,28 @@ void Game::Run()
 			Vector2 targetPos = player.GetPlayerPos();
 			camera.target = targetPos;
 
+			float mapWidth = 31 * 40;
+			float mapHeight = 13 * 40;
+			float halfWidth = GetScreenWidth() / (2.0f * camera.zoom);
+			float halfHeight = GetScreenHeight() / (2.0f * camera.zoom);
+
+			if (camera.target.x < halfWidth)
+			{
+				camera.target.x = halfWidth;
+			}
+			if (camera.target.y < halfHeight)
+			{
+				camera.target.y = halfHeight;
+			}
+			if (camera.target.x > mapWidth - halfWidth)
+			{
+				camera.target.x = mapWidth - halfWidth;
+			}
+			if (camera.target.y > mapHeight - halfHeight)
+			{
+				camera.target.y = mapHeight - halfHeight;
+			}
+
 			BeginMode2D(camera);
 			map.DrawMap();
 			player.DrawPlayer();
@@ -79,15 +101,10 @@ void Game::Run()
 			break;
 		}
 
-<<<<<<< HEAD
-=======
 		for (const Explosion& e : explosions) e.DrawExplosion();
-
-		
 
 		EndMode2D();
 
->>>>>>> 957f3f62fa69d0641498c4eedf9e26af4621253c
 		EndDrawing();
 	}
 
