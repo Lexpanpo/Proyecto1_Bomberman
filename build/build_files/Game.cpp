@@ -171,6 +171,11 @@ void Game::Run()
                     //map.ClearMap();
                 }
 
+                if (IsKeyReleased(KEY_C))
+                {
+                    map.ClearMap();
+                }
+
                 if (player.GetCurrentHp() <= 0)
                 {
                     // CloseWindow();
