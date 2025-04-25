@@ -17,7 +17,7 @@ Map::Map()
 		{
 			if (y == 0 || y == 12 || x == 0 || x == 30 || (y % 2 == 0 && x % 2 == 0)) 
 			{
-				grid[y][x] = 1;
+				grid[y][x] = 1;				
 			}
 			else 
 			{
@@ -42,6 +42,7 @@ void Map::DrawMap() const
 			{
 				Color color = GRAY;
 				DrawRectangle(x * 40, y * 40, 40, 40, color);
+				
 			}
 			else if (grid[y][x] == 2)
 			{
@@ -143,21 +144,22 @@ Vector2 Map::GetDoorPos()
 	return doorPos;
 }
 
-//void Map::ClearMap()
-//{
-//	for (int y = 0; y < 13; y++)
-//	{
-//		for (int x = 0; x < 31; x++)
-//		{
-//			if (grid[y][x] == 2)
-//			{
-//				grid[y][x] == 0;
-//
-//				cout << "casilla eliminada";
-//			}
-//		}
-//	}
-//}
+void Map::ClearMap()
+{
+	for (int y = 0; y < 13; y++)
+	{
+		for (int x = 0; x < 31; x++)
+		{
+			if (grid[y][x] == 2)
+			{
+				BreakTile(x, y);
+				//grid[y][x] = 0;
+
+				//cout << "casilla eliminada";
+			}
+		}
+	}
+}
 //
 //void Map::ResetLevel()
 //{
