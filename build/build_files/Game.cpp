@@ -22,19 +22,19 @@ Game::Game()
 	SetMusicVolume(music, 0.2f);
 	PlayMusicStream(music);
 
-    fxWav1 = LoadSound("resources/bombermanAudio/SFX/Bomberman SFX (1).wav");
+    /*fxWav1 = LoadSound("resources/bombermanAudio/SFX/Bomberman SFX (1).wav");
     fxWav2 = LoadSound("resources/bombermanAudio/SFX/Bomberman SFX (2).wav");
     fxWav3 = LoadSound("resources/bombermanAudio/SFX/Bomberman SFX (3).wav");
     fxWav4 = LoadSound("resources/bombermanAudio/SFX/Bomberman SFX (4).wav");
     fxWav5 = LoadSound("resources/bombermanAudio/SFX/Bomberman SFX (5).wav");
     fxWav6 = LoadSound("resources/bombermanAudio/SFX/Bomberman SFX (6).wav");
-    fxWav19 = LoadSound("resources/bombermanAudio/SFX/Bomberman II SFX (19).wav");
+    fxWav19 = LoadSound("resources/bombermanAudio/SFX/Bomberman II SFX (19).wav");*/
 
-    if (IsKeyPressed(KEY_RIGHT))PlaySound(fxWav1);
+    /*if (IsKeyPressed(KEY_RIGHT))PlaySound(fxWav1);
     if (IsKeyPressed(KEY_LEFT))PlaySound(fxWav1);
     if (IsKeyPressed(KEY_DOWN))PlaySound(fxWav2);
     if (IsKeyPressed(KEY_UP))PlaySound(fxWav2);
-    if (IsKeyPressed(KEY_SPACE))PlaySound(fxWav3); 
+    if (IsKeyPressed(KEY_SPACE))PlaySound(fxWav3); */
 
 	camera.target = { 0, 0 };
 	camera.offset = { GetScreenWidth() / 2.0f, GetScreenHeight() / 2.0f };
@@ -44,13 +44,13 @@ Game::Game()
 
 Game::~Game()
 {
-    UnloadSound(fxWav1);
+    /*UnloadSound(fxWav1);
     UnloadSound(fxWav2);
     UnloadSound(fxWav3);
     UnloadSound(fxWav4);
     UnloadSound(fxWav5);
     UnloadSound(fxWav6);
-    UnloadSound(fxWav19);
+    UnloadSound(fxWav19);*/
 	CloseWindow();
 }
 
