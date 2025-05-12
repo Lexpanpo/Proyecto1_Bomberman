@@ -7,6 +7,7 @@
 #include <iostream>
 #include <vector>
 #include "raylib.h"
+#define SPRITES "resources/bombermanSprites/General Sprites/Player_Sprites.png"
 
 using namespace std;
 
@@ -65,6 +66,7 @@ void Game::Run()
     GameState currentState = SPLASH;
     Texture2D titleScreen = LoadTexture("resources/bombermanSprites/UI/NES - Bomberman - Title Screen & Text.png");
     Texture2D WinScreen = LoadTexture("resources/bombermanSprites/UI/NES- Bomberman - Win screen.png");
+    Texture2D bomberman = LoadTexture("resources/bombermanSprites/General Sprites/Player_Sprites.png");
 
         while (!WindowShouldClose())
         {
@@ -94,6 +96,7 @@ void Game::Run()
 
             case GAMEPLAY:
             {
+               
                 player.UpdatePlayer(map);
                 Vector2 targetPos = player.GetPlayerPos();
                 camera.target = targetPos;
@@ -125,7 +128,7 @@ void Game::Run()
                 BeginMode2D(camera);
 
                 map.DrawMap();
-                player.DrawPlayer();
+                player.DrawPlayer(bomberman);
 
                 for (int i = 0; i < explosions.size();)
                 {
@@ -210,6 +213,7 @@ void Game::Run()
         }   
 
         UnloadTexture(titleScreen);
+        UnloadTexture(bomberman);
         UnloadMusicStream(music);
         CloseAudioDevice();
         CloseWindow();

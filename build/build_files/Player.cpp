@@ -72,11 +72,14 @@ void Player::UpdatePlayer(Map& map)
     }
 }
 
-void Player::DrawPlayer()
+
+
+void Player::DrawPlayer(Texture2D bomberman)
 {
     for (const Bomb& b : bombs) b.DrawBomb();
-
-    DrawRectangleRec(rect, RED);
+    Rectangle bombermanRecorte = { 66,0,12,16 };
+    Rectangle bombermanPosYtamaño = { rect.x, rect.y, 12*2, 16*2 };
+    DrawTexturePro(bomberman, bombermanRecorte, bombermanPosYtamaño, {0,0}, 0, WHITE);
 }
 
 Vector2 Player::GetPlayerPos()

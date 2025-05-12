@@ -17,7 +17,7 @@ public:
 	Player();
 
 	void UpdatePlayer(Map& map);
-	void DrawPlayer();
+	void DrawPlayer(Texture2D bomberman);
 
 	vector<Bomb> bombs;
 
