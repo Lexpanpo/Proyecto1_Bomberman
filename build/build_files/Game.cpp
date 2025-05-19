@@ -67,12 +67,15 @@ void Game::Run()
     Texture2D titleScreen = LoadTexture("resources/bombermanSprites/UI/NES - Bomberman - Title Screen & Text.png");
     Texture2D WinScreen = LoadTexture("resources/bombermanSprites/UI/NES- Bomberman - Win screen.png");
     Texture2D bomberman = LoadTexture("resources/bombermanSprites/General Sprites/Player_Sprites.png");
+    Texture2D bomba = LoadTexture("resources/bombermanSprites/General Sprites/Bomb_Sprites.png");
 
         while (!WindowShouldClose())
         {
             UpdateMusicStream(music);
             BeginDrawing();
             ClearBackground(BLACK);
+
+            float deltaTime = GetFrameTime();
 
             switch (currentState)
             {
@@ -128,7 +131,7 @@ void Game::Run()
                 BeginMode2D(camera);
 
                 map.DrawMap();
-                player.DrawPlayer(bomberman);
+                player.DrawPlayer(bomberman, bomba);
 
                 for (int i = 0; i < explosions.size();)
                 {

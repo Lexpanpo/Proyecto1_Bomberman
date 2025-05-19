@@ -84,7 +84,20 @@ void Bomb::Explode(Map& map)
 	}
 }
 
-void Bomb::DrawBomb() const 
+void Bomb::DrawBomb(Texture2D bomba) const
 {
-	DrawRectangle(pos.x + 20, pos.y + 20, 12, 12, BLACK);
+	DrawRectangle(pos.x + 5, pos.y + 5, 20, 20, BLACK);
+	//Rectangle source = {};
+	//DrawTexturePro(bomba,)
+}
+
+void Bomb::Update(float delta) const
+{
+	//animationTimer += delta;
+
+	//if (animationTimer >= framespeed)
+	//{
+	//	CurrentFrame = (CurrentFrame + 1) % 2;
+	//	animationTimer = 0.0f;
+	//}
 }

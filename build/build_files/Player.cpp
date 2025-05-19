@@ -117,9 +117,9 @@ void Player::UpdatePlayer(Map& map)
 
 
 
-void Player::DrawPlayer(Texture2D bomberman)
+void Player::DrawPlayer(Texture2D bomberman, Texture2D bomba)
 {
-    for (const Bomb& b : bombs) b.DrawBomb();
+    for (const Bomb& b : bombs) b.DrawBomb(bomba);
     Rectangle bombermanRecorte = { sprite_status.x,sprite_status.y,12,16 };
     Rectangle bombermanPosYtamaño = { rect.x, rect.y, 12*2, 16*2 };
     DrawTexturePro(bomberman, bombermanRecorte, bombermanPosYtamaño, {0,0}, 0, WHITE);

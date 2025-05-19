@@ -17,12 +17,18 @@ public:
 	Bomb(Vector2 pos);
 
 	bool UpdateState(float deltaTime, Map& map);
-	void DrawBomb() const;
+
+	void DrawBomb(Texture2D bomba) const;
+
+	void Update(float delta) const;
 
 private:
 	Vector2 pos;
 	float timer;
 	bool hasExploded;
+	float animationTimer = 0.0f;
+	int CurrentFrame = 0;
+
 
 	void Explode(Map& map);
 };
