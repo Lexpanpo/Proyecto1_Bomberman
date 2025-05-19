@@ -16,18 +16,61 @@ void Player::UpdatePlayer(Map& map)
     if (IsKeyDown(KEY_RIGHT))
     {
         rect.x += playerSpeed;
+        mirando = 1;
+
+        sprite_status.y = 16;
+        if (sprite_status.x >= 34)
+        {
+            sprite_status.x = 2;
+        }
+        else
+        {
+            sprite_status.x += 16;
+        }
     }
     if (IsKeyDown(KEY_LEFT))
     {
         rect.x -= playerSpeed;
+        mirando = 2;
+
+        sprite_status.y = 0;
+        if (sprite_status.x >= 34)
+        {
+            sprite_status.x = 2;
+        }
+        else
+        {
+            sprite_status.x += 16;
+        }
     }
     if (IsKeyDown(KEY_DOWN))
     {
         rect.y += playerSpeed;
+        mirando = 0;
+
+        sprite_status.y = 0;
+        if (sprite_status.x >= 82)
+        {
+            sprite_status.x = 50;
+        }
+        else
+        {
+            sprite_status.x += 16;
+        }
     }
     if (IsKeyDown(KEY_UP))
     {
         rect.y -= playerSpeed;
+        mirando = 3;
+        sprite_status.y = 16;
+        if (sprite_status.x >= 82)
+        {
+            sprite_status.x = 50;
+        }
+        else
+        {
+            sprite_status.x += 16;
+        }
     }      
 
     int posX = (pos.x + 16) / 40;
@@ -77,7 +120,7 @@ void Player::UpdatePlayer(Map& map)
 void Player::DrawPlayer(Texture2D bomberman)
 {
     for (const Bomb& b : bombs) b.DrawBomb();
-    Rectangle bombermanRecorte = { 66,0,12,16 };
+    Rectangle bombermanRecorte = { sprite_status.x,sprite_status.y,12,16 };
     Rectangle bombermanPosYtamaño = { rect.x, rect.y, 12*2, 16*2 };
     DrawTexturePro(bomberman, bombermanRecorte, bombermanPosYtamaño, {0,0}, 0, WHITE);
 }

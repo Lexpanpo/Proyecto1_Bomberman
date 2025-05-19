@@ -9,8 +9,6 @@
 
 using namespace std;
 
-
-
 class Player
 {
 public:
@@ -40,5 +38,7 @@ private:
 	int playerHp = 3;
 
 	bool hasWin = false;
+	int mirando = 0;
+	Rectangle sprite_status{ 66,0 };
 };
 
