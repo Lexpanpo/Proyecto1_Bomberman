@@ -23,11 +23,13 @@ public:
 	void Update(float delta) const;
 
 private:
+	Rectangle rect;
 	Vector2 pos;
 	float timer;
 	bool hasExploded;
 	float animationTimer = 0.0f;
 	int CurrentFrame = 0;
+	Rectangle sprite_status{ 16,15 };
 
 
 	void Explode(Map& map);

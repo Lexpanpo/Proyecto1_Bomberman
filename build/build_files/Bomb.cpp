@@ -8,6 +8,7 @@ extern vector<Explosion> explosions;
 
 Bomb::Bomb(Vector2 pos)
 {
+	rect = { 5,5,20,20 };
 	this->pos = pos;
 	timer = 2.0f;
 	hasExploded = false;
@@ -87,8 +88,9 @@ void Bomb::Explode(Map& map)
 void Bomb::DrawBomb(Texture2D bomba) const
 {
 	DrawRectangle(pos.x + 5, pos.y + 5, 20, 20, BLACK);
-	//Rectangle source = {};
-	//DrawTexturePro(bomba,)
+	Rectangle bombaRecorte = { sprite_status.x,sprite_status.y,12,16 };
+	Rectangle bombaPosYtamaño = { rect.x, rect.y, 12 * 2, 16 * 2 };
+	DrawTexturePro(bomba, bombaRecorte, bombaPosYtamaño, { 0,0 }, 0, WHITE);
 }
 
 void Bomb::Update(float delta) const
