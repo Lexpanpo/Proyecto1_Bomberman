@@ -87,9 +87,9 @@ void Bomb::Explode(Map& map)
 
 void Bomb::DrawBomb(Texture2D bomba) const
 {
-	DrawRectangle(pos.x + 5, pos.y + 5, 20, 20, BLACK);
-	Rectangle bombaRecorte = { sprite_status.x,sprite_status.y,12,16 };
-	Rectangle bombaPosYtamaño = { rect.x, rect.y, 12 * 2, 16 * 2 };
+	/*DrawRectangle(pos.x + 5, pos.y + 5, 20, 20, BLACK);*/
+	Rectangle bombaRecorte = { sprite_status.x,sprite_status.y,16,16 };
+	Rectangle bombaPosYtamaño = { pos.x, pos.y, 16*2, 16*2 };
 	DrawTexturePro(bomba, bombaRecorte, bombaPosYtamaño, { 0,0 }, 0, WHITE);
 }
 

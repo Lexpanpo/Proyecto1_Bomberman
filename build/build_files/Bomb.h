@@ -29,7 +29,7 @@ private:
 	bool hasExploded;
 	float animationTimer = 0.0f;
 	int CurrentFrame = 0;
-	Rectangle sprite_status{ 16,15 };
+	Rectangle sprite_status{ 16,0 };
 
 
 	void Explode(Map& map);
