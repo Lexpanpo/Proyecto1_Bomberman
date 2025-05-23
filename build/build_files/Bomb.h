@@ -23,7 +23,7 @@ public:
 	void Update(float delta) const;
 
 private:
-	Rectangle rect;
+
 	Vector2 pos;
 	float timer;
 	bool hasExploded;

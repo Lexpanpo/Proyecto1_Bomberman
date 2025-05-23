@@ -7,7 +7,7 @@ class Map
 public:
 	Map();
 	
-	void DrawMap() const;
+	void DrawMap(Texture2D walls) const;
 
 	bool CheckCollisions(Rectangle& playerRect);
 
@@ -27,8 +27,8 @@ private:
 
 	bool doorSpawned; 
 	Vector2 doorPos;
+	Rectangle sprite_status{ 16,0 };
 
-	Texture2D solidBlock = LoadTexture("resources/bombermanSprites/General Sprites/Walls_Sprites.png");
 };
 
 

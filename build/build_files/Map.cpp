@@ -32,17 +32,20 @@ Map::Map()
 	doorPos = { -1, -1 };
 }
 
-void Map::DrawMap() const 
+void Map::DrawMap(Texture2D walls) const
 {
+
 	for (int y = 0; y < 13; y++)
 	{
 		for (int x = 0; x < 31; x++)
 		{
 			if (grid[y][x] == 1)
 			{
+				//Rectangle wallsRecorte = { 0, 0 ,16,16 };
+				//Rectangle wallsPosYtamaño = { x, y, 16, 16 };
+				//DrawTexturePro(walls, wallsRecorte, wallsPosYtamaño, { 0,0 }, 0, WHITE);
 				Color color = GRAY;
 				DrawRectangle(x * 40, y * 40, 40, 40, color);
-				
 			}
 			else if (grid[y][x] == 2)
 			{
