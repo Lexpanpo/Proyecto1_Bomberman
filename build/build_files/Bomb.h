@@ -20,17 +20,18 @@ public:
 
 	void DrawBomb(Texture2D bomba) const;
 
-	void Update(float delta) const;
+	//void Update(float delta) const;
 
 private:
 
 	Vector2 pos;
 	float timer;
 	bool hasExploded;
-	float animationTimer = 0.0f;
-	int CurrentFrame = 0;
-	Rectangle sprite_status{ 16,0 };
 
+	float animationTimer = 0.0f;
+	int currentFrame = 0;
+	Rectangle sprite_status { 0, 0, 16, 16};
+	float frameSpeed = 0.3f;
 
 	void Explode(Map& map);
 };

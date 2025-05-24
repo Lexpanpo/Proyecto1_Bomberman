@@ -11,6 +11,10 @@ Bomb::Bomb(Vector2 pos)
 	this->pos = pos;
 	timer = 2.0f;
 	hasExploded = false;
+
+	animationTimer = 0.0f;
+	currentFrame = 0;
+	sprite_status = { 0, 0, 16, 16 };
 }
 
 
@@ -19,6 +23,18 @@ bool Bomb::UpdateState(float deltaTime, Map& map)
 	if (hasExploded)
 	{
 		return true;
+	}
+
+	const int bomb_sprites_x[] = { 0, 16, 32 };
+	const int numFrames = 3;
+
+	animationTimer += deltaTime;
+
+	if (animationTimer >= frameSpeed)
+	{
+		animationTimer = 0.0f;
+		currentFrame = (currentFrame + 1) % numFrames;
+		sprite_status.x = (float)bomb_sprites_x[currentFrame];
 	}
 
 	timer -= deltaTime;
@@ -94,13 +110,13 @@ void Bomb::DrawBomb(Texture2D bomba) const
 
 }
 
-void Bomb::Update(float delta) const
-{
-	//animationTimer += delta;
-
-	//if (animationTimer >= framespeed)
-	//{
-	//	CurrentFrame = (CurrentFrame + 1) % 2;
-	//	animationTimer = 0.0f;
-	//}
-}
+//void Bomb::Update(float delta) const
+//{
+//	animationTimer += delta;
+//
+//	if (animationTimer >= framespeed)
+//	{
+//		currentFrame = (currentFrame + 1) % 2;
+//		animationTimer = 0.0f;
+//	}
+//}
