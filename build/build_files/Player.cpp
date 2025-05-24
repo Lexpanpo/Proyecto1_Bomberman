@@ -93,7 +93,7 @@ void Player::UpdatePlayer(Map& map)
         break;
     }
 
-    if (IsKeyPressed(KEY_SPACE))
+    if (IsKeyPressed(KEY_SPACE) && bombs.size() < maxBombs)
     {
         int gridX = (int)((rect.x + rect.width / 2) / 40.0f);
         int gridY = (int)((rect.y + rect.height / 2) / 40.0f);

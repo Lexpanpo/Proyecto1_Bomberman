@@ -90,7 +90,7 @@ void Bomb::DrawBomb(Texture2D bomba) const
 	Rectangle bombaPosYtamaño = { pos.x, pos.y, 20*2, 20*2 };
 	DrawTexturePro(bomba, bombaRecorte, bombaPosYtamaño, { 0,0 }, 0, WHITE);
 
-	DrawRectangleLines(pos.x, pos.y, 40, 40, YELLOW); //  Debug para ver los colliders del jugador
+	DrawRectangleLines(pos.x, pos.y, 40, 40, YELLOW); //  Debug para ver los colliders de las bombas
 
 }
 

@@ -42,7 +42,9 @@ private:
 	int mirando = 0;
 	Rectangle sprite_status{ 66,0 };
 	float timerAnimacion = 0.0f;
-	const float frameSpeed = 0.15f; //	Cambiar esto para ajustar la velocidad de la animacion
+	const float frameSpeed = 0.10f; //	Cambiar esto para ajustar la velocidad de la animacion
 	int currentFrame = 1;
+
+	int maxBombs = 1;
 };
 
