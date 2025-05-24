@@ -38,7 +38,11 @@ private:
 	int playerHp = 3;
 
 	bool hasWin = false;
+
 	int mirando = 0;
 	Rectangle sprite_status{ 66,0 };
+	float timerAnimacion = 0.0f;
+	const float frameSpeed = 0.15f; //	Cambiar esto para ajustar la velocidad de la animacion
+	int currentFrame = 1;
 };
 

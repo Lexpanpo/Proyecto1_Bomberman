@@ -87,8 +87,11 @@ void Bomb::Explode(Map& map)
 void Bomb::DrawBomb(Texture2D bomba) const
 {
 	Rectangle bombaRecorte = { sprite_status.x,sprite_status.y,16,16 };
-	Rectangle bombaPosYtamaño = { pos.x, pos.y, 16*2, 16*2 };
+	Rectangle bombaPosYtamaño = { pos.x, pos.y, 20*2, 20*2 };
 	DrawTexturePro(bomba, bombaRecorte, bombaPosYtamaño, { 0,0 }, 0, WHITE);
+
+	DrawRectangleLines(pos.x, pos.y, 40, 40, YELLOW); //  Debug para ver los colliders del jugador
+
 }
 
 void Bomb::Update(float delta) const

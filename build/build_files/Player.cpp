@@ -11,89 +11,100 @@ Player::Player()
 void Player::UpdatePlayer(Map& map)
 {
     Rectangle oldRect = rect;
-    //Vector2 oldPos = pos;
+    bool isMoving = false;
+    float deltaTime = GetFrameTime();
+
+    int wasLooking = mirando;
 
     if (IsKeyDown(KEY_RIGHT))
     {
         rect.x += playerSpeed;
-        mirando = 1;
-
-        sprite_status.y = 16;
-        if (sprite_status.x >= 34)
-        {
-            sprite_status.x = 2;
-        }
-        else
-        {
-            sprite_status.x += 16;
-        }
+        mirando = 1; // Derecha
+        isMoving = true;
     }
     if (IsKeyDown(KEY_LEFT))
     {
         rect.x -= playerSpeed;
-        mirando = 2;
-
-        sprite_status.y = 0;
-        if (sprite_status.x >= 34)
-        {
-            sprite_status.x = 2;
-        }
-        else
-        {
-            sprite_status.x += 16;
-        }
+        mirando = 2; // Izquierda
+        isMoving = true;
     }
     if (IsKeyDown(KEY_DOWN))
     {
         rect.y += playerSpeed;
-        mirando = 0;
-
-        sprite_status.y = 0;
-        if (sprite_status.x >= 82)
-        {
-            sprite_status.x = 50;
-        }
-        else
-        {
-            sprite_status.x += 16;
-        }
+        mirando = 0; // Abajo
+        isMoving = true;
     }
     if (IsKeyDown(KEY_UP))
     {
         rect.y -= playerSpeed;
-        mirando = 3;
-        sprite_status.y = 16;
-        if (sprite_status.x >= 82)
-        {
-            sprite_status.x = 50;
-        }
-        else
-        {
-            sprite_status.x += 16;
-        }
-    }      
-
-    int posX = (pos.x + 16) / 40;
-    int posY = (pos.y + 16) / 40;
+        mirando = 3; // Arriba
+        isMoving = true;
+    }
 
     if (map.CheckCollisions(rect))
     {
         rect = oldRect;
-        //pos = oldPos;
+        
+        isMoving = false;
+    }
+
+    const int walk_lft_rght[] = { 2, 18, 34 };  // Coordenadas sprites para cuando se mueve a Izquierda/Derecha
+    const int walk_up_dwn[] = { 50, 66, 82 }; // Coordenadas sprites para cuando se mueve a Arriba/Abajo
+    const int numFrames = 3;
+
+    if (isMoving)
+    {
+        timerAnimacion += deltaTime;
+        if (timerAnimacion >= frameSpeed)
+        {
+            timerAnimacion = 0.0f;
+            currentFrame = (currentFrame + 1) % numFrames;
+        }
+    }
+    else
+    {
+        currentFrame = 1;
+        timerAnimacion = 0.0f;
+    }
+
+    if (mirando != wasLooking && isMoving) //   Reset del frame a idle para que la animacion no haga cosas raras al cambiar de direccion
+    {
+        currentFrame = 1;
+        timerAnimacion = 0.0f;
+    }
+
+    switch (mirando)
+    {
+    case 0: // Abajo
+        sprite_status.y = 0;
+        sprite_status.x = walk_up_dwn[currentFrame];
+        break;
+    case 1: // Derecha
+        sprite_status.y = 16;
+        sprite_status.x = walk_lft_rght[currentFrame];
+        break;
+    case 2: // Izquierda
+        sprite_status.y = 0;
+        sprite_status.x = walk_lft_rght[currentFrame];
+        break;
+    case 3: // Arriba
+        sprite_status.y = 16;
+        sprite_status.x = walk_up_dwn[currentFrame];
+        break;
     }
 
     if (IsKeyPressed(KEY_SPACE))
     {
-        Vector2 bombPos = { (rect.x / 40) * 40, (rect.y / 40) * 40 };
-        //Bomb newBomb(bombPos);
+        int gridX = (int)((rect.x + rect.width / 2) / 40.0f);
+        int gridY = (int)((rect.y + rect.height / 2) / 40.0f);
+        Vector2 bombPos = { (float)gridX * 40.0f, (float)gridY * 40.0f };
 
         bombs.push_back(Bomb(bombPos));
-        //newBomb.DrawBomb();
     }
 
     for (int i = 0; i < bombs.size();)
     {
-        if (bombs[i].UpdateState(GetFrameTime(), map))
+        if (bombs[i].UpdateState(deltaTime, map))
         {
             bombs.erase(bombs.begin() + i);
         }
@@ -108,9 +119,6 @@ void Player::UpdatePlayer(Map& map)
         if (IsKeyPressed(KEY_ENTER))
         {
             hasWin = true;
-            
-            // CloseWindow();
-
         }
     }
 }
