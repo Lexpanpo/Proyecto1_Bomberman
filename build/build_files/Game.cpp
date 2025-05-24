@@ -79,30 +79,74 @@ void Game::Run()
         UpdateMusicStream(music);
         float deltaTime = GetFrameTime();
 
-        // --- Lógica de Actualización (dependiente del estado) ---
         switch (currentState)
         {
         case SPLASH:
+        {
             if (IsKeyPressed(KEY_ENTER)) currentState = TITLE;
             break;
+        }
         case TITLE:
+        {
             if (IsKeyPressed(KEY_ENTER)) currentState = GAMEPLAY;
             break;
+        }
         case GAMEPLAY:
         {
-            // Inicializar enemigos si es necesario
             if (!isPlaying)
             {
-                enemies.clear();
-                enemies.push_back(Enemy({ 10 * 40.0f, 3 * 40.0f }));
-                enemies.push_back(Enemy({ 25 * 40.0f, 5 * 40.0f }));
-                enemies.push_back(Enemy({ 8 * 40.0f, 10 * 40.0f }));
+                int enemiesToSpawn = 5; // Numero de enmeigos que se spawnean
+
+                for (int i = 0; i < enemiesToSpawn; ++i)
+                {
+                    int gridX, gridY;
+                    bool validSpawn;
+                    int attempts = 0; // Variable para qque el bucle no sea infinito
+
+                    do {
+                        validSpawn = true;
+                        attempts++;
+
+                        gridX = GetRandomValue(1, 29);
+                        gridY = GetRandomValue(1, 11);
+
+                        if (!map.IsTileEmpty(gridX, gridY)) {
+                            validSpawn = false;
+                            continue;
+                        }
+
+                        if (gridX <= 3 && gridY <= 3) {
+                            validSpawn = false;
+                            continue;
+                        }
+
+                        for (const Enemy& existingEnemy : enemies) //   Bucle para comprobar si ya hay un enemigo en esa posicion
+                        {
+                            Rectangle r = existingEnemy.GetRect();
+                            int enemyGridX = (int)(r.x / 40.0f);
+                            int enemyGridY = (int)(r.y / 40.0f);
+                            if (gridX == enemyGridX && gridY == enemyGridY) {
+                                validSpawn = false;
+                                break;
+                            }
+                        }
+
+                        
+                    } while (!validSpawn && attempts < 1000); //    Limite de intentos (Lo he puesto en 1000 pero se puede bajar)
+
+                    if (validSpawn) {
+                        enemies.push_back(Enemy({ (float)gridX * 40.0f, (float)gridY * 40.0f }));
+                    }
+                    else {
+                        cout << "NO SE HA ENCONTRADO ESPACIO PARA EL ENEMIGO! " << i + 1 << endl;
+                    }
+                }
+
                 isPlaying = true;
             }
 
             player.UpdatePlayer(map);
 
-            // Actualizar Enemigos
             for (Enemy& enemy : enemies)
             {
                 if (enemy.IsAlive())
@@ -111,7 +155,6 @@ void Game::Run()
                 }
             }
 
-            // Actualizar Explosiones (solo timer)
             for (int i = 0; i < explosions.size();)
             {
                 if (explosions[i].UpdateStatus(deltaTime))
@@ -126,8 +169,8 @@ void Game::Run()
 
             bool playerWasHit = false;
 
-            // Chequear Colisiones (Explosiones)
-            for (const Explosion& e : explosions)
+            
+            for (const Explosion& e : explosions)   // Colisiones con las eplosiones
             {
                 if (!playerWasHit && CheckCollisionRecs(player.GetPlayerRect(), e.GetExplosionRect()))
                 {
@@ -143,8 +186,8 @@ void Game::Run()
                 }
             }
 
-            // Chequear Colisiones (Jugador vs Enemigos)
-            for (const Enemy& enemy : enemies)
+            
+            for (const Enemy& enemy : enemies)  //Colisiones del jugador y los enemigos
             {
                 if (!playerWasHit && enemy.IsAlive() && CheckCollisionRecs(player.GetPlayerRect(), enemy.GetRect()))
                 {
@@ -218,15 +261,20 @@ void Game::Run()
         switch (currentState)
         {
         case SPLASH:
+        {
             DrawText("This is a recreation of Bomberman NES. Press ENTER to continue.", 100, 350, 40, WHITE);
             DrawText("Proyecto I, Disseny i desenvolupament de videojocs, CITM Terrassa.", 200, 450, 30, WHITE);
             DrawText("Pol Cuenca, Andrea Velez, Daniel Castillero. Tutor: Alejandro Paris Gomez ", 200, 500, 30, WHITE);
             break;
+        }
         case TITLE:
+        {
             DrawTextureEx(titleScreen, { 350, 0 }, 0, 3.5, WHITE);
             DrawText("Presiona ENTER para comenzar", 500, 850, 25, WHITE);
             break;
+        }
         case GAMEPLAY:
+        {
             BeginMode2D(camera);
             map.DrawMap(walls);
             player.DrawPlayer(bomberman, bomba);
@@ -241,17 +289,21 @@ void Game::Run()
                 e.DrawExplosion();
             }
             EndMode2D();
-            
-            break;
 
+            break;
+        }
         case WIN:
+        {
             DrawTextureEx(WinScreen, { 300, 0 }, 0, 1.5, WHITE);
             DrawText("Presiona ENTER para salir", 650, 700, 25, WHITE);
             break;
+        }
         case DEATH:
+        {
             DrawText("You Lost", 700, 425, 50, RED);
             DrawText("Presiona ENTER para salir", 650, 500, 25, WHITE);
             break;
+        }
         }
 
         EndDrawing();

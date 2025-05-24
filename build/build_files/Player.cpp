@@ -121,8 +121,10 @@ void Player::DrawPlayer(Texture2D bomberman, Texture2D bomba)
 {
     for (const Bomb& b : bombs) b.DrawBomb(bomba);
     Rectangle bombermanRecorte = { sprite_status.x,sprite_status.y,12,16 };
-    Rectangle bombermanPosYtamaño = { rect.x, rect.y, 12*2, 16*2 };
+    Rectangle bombermanPosYtamaño = { rect.x, rect.y, 16*2, 16*2 };
     DrawTexturePro(bomberman, bombermanRecorte, bombermanPosYtamaño, {0,0}, 0, WHITE);
+
+    DrawRectangleLines(rect.x, rect.y, rect.width, rect.height, BLACK); //  Debug para ver los colliders del jugador
 }
 
 Vector2 Player::GetPlayerPos()

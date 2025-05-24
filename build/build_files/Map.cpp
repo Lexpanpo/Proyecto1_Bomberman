@@ -137,6 +137,16 @@ void Map::PlaceSoftBlocks()
 	}
 }
 
+bool Map::IsTileEmpty(int gridX, int gridY) const
+{
+	if (gridX < 0 || gridX >= 31 || gridY < 0 || gridY >= 13)
+	{
+		return false; 
+	}
+
+	return grid[gridY][gridX] == 0;
+}
+
 bool Map::IsDoorSpawned()
 {
 	return doorSpawned;
