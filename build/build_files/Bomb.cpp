@@ -19,7 +19,7 @@ Bomb::Bomb(Vector2 pos, int bombRange)
 }
 
 
-bool Bomb::UpdateState(float deltaTime, Map& map)
+bool Bomb::UpdateState(float deltaTime, Map& map, static Sound soundArray[])
 {
 	if (hasExploded)
 	{
@@ -43,6 +43,7 @@ bool Bomb::UpdateState(float deltaTime, Map& map)
 	if (timer <= 0)
 	{
 		Explode(map);
+		PlaySound(soundArray[6]);
 		hasExploded = true;
 	}
 

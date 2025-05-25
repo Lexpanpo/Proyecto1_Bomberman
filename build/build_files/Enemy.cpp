@@ -54,8 +54,8 @@ void Enemy::Update(Map& map, float deltaTime, const vector<Bomb>& playerBombs)
 void Enemy::DrawEnemy(Texture2D enemy) const
 {
 	if (alive)
-	{
-	/*	DrawRectangleRec(rect, PURPLE);*/
+    {
+
         Rectangle enemyRecorte = { sprite_status.x,sprite_status.y,16,16 };
         Rectangle enemyPosYtamaño = { pos.x, pos.y,20 * 2 , 20 * 2 };
         DrawTexturePro(enemy, enemyRecorte, enemyPosYtamaño, { 0,0 }, 0, WHITE);

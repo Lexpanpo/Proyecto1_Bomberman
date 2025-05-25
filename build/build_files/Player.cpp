@@ -8,7 +8,7 @@ Player::Player()
     //pos = { 45, 45 };		
 }
 
-void Player::UpdatePlayer(Map& map)
+void Player::UpdatePlayer(Map& map, static Sound soundArray[])
 {
     Rectangle oldRect = rect;
     bool isMoving = false;
@@ -22,24 +22,28 @@ void Player::UpdatePlayer(Map& map)
         rect.x += playerSpeed;
         mirando = 1; // Derecha
         isMoving = true;
+        PlaySound(soundArray[0]);
     }
     if (IsKeyDown(KEY_LEFT))
     {
         rect.x -= playerSpeed;
         mirando = 2; // Izquierda
         isMoving = true;
+        PlaySound(soundArray[0]);
     }
     if (IsKeyDown(KEY_DOWN))
     {
         rect.y += playerSpeed;
         mirando = 0; // Abajo
         isMoving = true;
+        PlaySound(soundArray[1]);
     }
     if (IsKeyDown(KEY_UP))
     {
         rect.y -= playerSpeed;
         mirando = 3; // Arriba
         isMoving = true;
+        PlaySound(soundArray[1]);
     }
 
     // Colisiones
@@ -124,7 +128,7 @@ void Player::UpdatePlayer(Map& map)
 
     for (int i = 0; i < bombs.size();)
     {
-        if (bombs[i].UpdateState(deltaTime, map))
+        if (bombs[i].UpdateState(deltaTime, map, soundArray))
         {
             bombs.erase(bombs.begin() + i);
         }

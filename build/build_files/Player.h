@@ -14,7 +14,7 @@ class Player
 public:
 	Player();
 
-	void UpdatePlayer(Map& map);
+	void UpdatePlayer(Map& map, static Sound soundArray[]);
 	void DrawPlayer(Texture2D bomberman, Texture2D bomba);
 
 	vector<Bomb> bombs;

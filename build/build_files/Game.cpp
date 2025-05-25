@@ -17,44 +17,33 @@ vector<Explosion> explosions;
 
 Game::Game()
 {
-	InitWindow(1600, 900, "Bomberman - Eldiablo");
-	SetTargetFPS(60);
+    InitWindow(1600, 900, "Bomberman - Eldiablo");
+    SetTargetFPS(60);
 
-	InitAudioDevice();
-	music = LoadMusicStream("resources/bombermanAudio/music/StageTheme.wav");
-	SetMusicVolume(music, 0.2f);
-	PlayMusicStream(music);
 
-    /*fxWav1 = LoadSound("resources/bombermanAudio/SFX/Bomberman SFX (1).wav");
-    fxWav2 = LoadSound("resources/bombermanAudio/SFX/Bomberman SFX (2).wav");
-    fxWav3 = LoadSound("resources/bombermanAudio/SFX/Bomberman SFX (3).wav");
-    fxWav4 = LoadSound("resources/bombermanAudio/SFX/Bomberman SFX (4).wav");
-    fxWav5 = LoadSound("resources/bombermanAudio/SFX/Bomberman SFX (5).wav");
-    fxWav6 = LoadSound("resources/bombermanAudio/SFX/Bomberman SFX (6).wav");
-    fxWav19 = LoadSound("resources/bombermanAudio/SFX/Bomberman II SFX (19).wav");*/
+    InitAudioDevice();
+    music = LoadMusicStream("resources/bombermanAudio/music/StageTheme.wav");
+    SetMusicVolume(music, 0.2f);
+    PlayMusicStream(music);
 
-    /*if (IsKeyPressed(KEY_RIGHT))PlaySound(fxWav1);
-    if (IsKeyPressed(KEY_LEFT))PlaySound(fxWav1);
-    if (IsKeyPressed(KEY_DOWN))PlaySound(fxWav2);
-    if (IsKeyPressed(KEY_UP))PlaySound(fxWav2);
-    if (IsKeyPressed(KEY_SPACE))PlaySound(fxWav3); */
 
-	camera.target = { 0, 0 };
-	camera.offset = { GetScreenWidth() / 2.0f, GetScreenHeight() / 2.0f };
-	camera.rotation = 0;
-	camera.zoom = 1.5;
+
+    //if (IsKeyPressed(KEY_RIGHT))PlaySound(soundArray[0]);
+    //if (IsKeyPressed(KEY_LEFT))PlaySound(soundArray[0]);
+    //if (IsKeyPressed(KEY_DOWN))PlaySound(soundArray[1]);
+    //if (IsKeyPressed(KEY_UP))PlaySound(soundArray[1]);
+    //if (IsKeyPressed(KEY_SPACE))PlaySound(soundArray[2]);
+
+
+    camera.target = { 0, 0 };
+    camera.offset = { GetScreenWidth() / 2.0f, GetScreenHeight() / 2.0f };
+    camera.rotation = 0;
+    camera.zoom = 1.5;
 }
 
 Game::~Game()
 {
-    /*UnloadSound(fxWav1);
-    UnloadSound(fxWav2);
-    UnloadSound(fxWav3);
-    UnloadSound(fxWav4);
-    UnloadSound(fxWav5);
-    UnloadSound(fxWav6);
-    UnloadSound(fxWav19);*/
-	CloseWindow();
+    CloseWindow();
 }
 
 
@@ -75,31 +64,31 @@ void SpawnEnemiesForLevel(int level, Map& map, vector<Enemy>& enemies) // Funció
             gridX = GetRandomValue(1, 29);
             gridY = GetRandomValue(1, 11);
 
-            if (!map.IsTileEmpty(gridX, gridY)) 
-            { 
+            if (!map.IsTileEmpty(gridX, gridY))
+            {
                 validSpawn = false; continue;
             }
             if (gridX <= 3 && gridY <= 3)
-            { 
-                validSpawn = false; continue; 
+            {
+                validSpawn = false; continue;
             }
             for (const Enemy& existingEnemy : enemies) // Bucle para comprobar si ya hay un enemigo en esa posicion
             {
                 Rectangle r = existingEnemy.GetRect();
                 if ((int)(r.x / 40.0f) == gridX && (int)(r.y / 40.0f) == gridY)
-                { 
-                    validSpawn = false; break; 
+                {
+                    validSpawn = false; break;
                 }
             }
         } while (!validSpawn && attempts < 1000);   // Limite de intentos (Lo he puesto en 1000 pero se puede bajar)
 
         EnemyType type = (GetRandomValue(1, 10) <= 7) ? EnemyType::BALLOM : EnemyType::DORIA;
 
-        if (validSpawn) 
-        { 
+        if (validSpawn)
+        {
             enemies.push_back(Enemy({ (float)gridX * 40.0f, (float)gridY * 40.0f }, type));
         }
-        else 
+        else
         {
             cout << "NO SE HA ENCONTRADO ESPACIO PARA EL ENEMIGO! " << i + 1 << endl;
         }
@@ -129,7 +118,7 @@ void Game::Run()
 
     int currentLevel = 1;
 
-    enum GameState { SPLASH, TITLE, GAMEPLAY, WIN, DEATH};
+    enum GameState { SPLASH, TITLE, GAMEPLAY, WIN, DEATH };
     GameState currentState = SPLASH;
 
     Texture2D titleScreen = LoadTexture("resources/bombermanSprites/UI/NES - Bomberman - Title Screen & Text.png");
@@ -140,6 +129,20 @@ void Game::Run()
     Texture2D walls = LoadTexture("resources/bombermanSprites/General Sprites/Walls_Sprites.png");
     Texture2D explosion = LoadTexture("resources/bombermanSprites/General Sprites/Explosion_Sprites.png");
     Texture2D enemy1 = LoadTexture("resources/bombermanSprites/General Sprites/Enemies_Sprites.png");
+
+    static Sound soundArray[7];
+
+    soundArray[0] = LoadSound("resources/bombermanAudio/SFX/Bomberman SFX (1).wav");
+    soundArray[1] = LoadSound("resources/bombermanAudio/SFX/Bomberman SFX (2).wav");
+    soundArray[2] = LoadSound("resources/bombermanAudio/SFX/Bomberman SFX (3).wav");
+    soundArray[3] = LoadSound("resources/bombermanAudio/SFX/Bomberman SFX (4).wav");
+    soundArray[4] = LoadSound("resources/bombermanAudio/SFX/Bomberman SFX (5).wav");
+    soundArray[5] = LoadSound("resources/bombermanAudio/SFX/Bomberman SFX (6).wav");
+    soundArray[6] = LoadSound("resources/bombermanAudio/SFX/Bomberman II SFX (19).wav");
+
+    for (int i = 0; i < 6; i++) {
+        SetSoundVolume(soundArray[i], 0.2f);
+    }
 
     while (!WindowShouldClose())
     {
@@ -165,7 +168,7 @@ void Game::Run()
                 LoadLevel(currentLevel, player, map, enemies, isPlaying);
             }
 
-            player.UpdatePlayer(map);
+            player.UpdatePlayer(map, soundArray);
             map.Update(deltaTime);
 
             for (Enemy& enemy : enemies)
@@ -190,7 +193,7 @@ void Game::Run()
 
             bool playerWasHit = false;
 
-            
+
             for (const Explosion& e : explosions)   // Colisiones con las eplosiones
             {
                 if (!playerWasHit && CheckCollisionRecs(player.GetPlayerRect(), e.GetExplosionRect()))
@@ -208,7 +211,7 @@ void Game::Run()
                 }
             }
 
-            
+
             for (const Enemy& enemy : enemies)  //Colisiones del jugador y los enemigos
             {
                 if (!playerWasHit && enemy.IsAlive() && CheckCollisionRecs(player.GetPlayerRect(), enemy.GetRect()))
@@ -233,11 +236,11 @@ void Game::Run()
 
                 if (CheckCollisionRecs(player.GetPlayerRect(), doorRect) && IsKeyPressed(KEY_ENTER)) {
                     currentLevel++;
-                    if (currentLevel > 4) 
+                    if (currentLevel > 4)
                     {
                         currentState = WIN;
                     }
-                    else 
+                    else
                     {
                         isPlaying = false;
                     }
@@ -373,6 +376,8 @@ void Game::Run()
     UnloadTexture(explosion);
     UnloadTexture(enemy1);
     UnloadMusicStream(music);
+    for (int i = 0; i < 6; i++) UnloadSound(soundArray[i]);
+
     CloseAudioDevice();
-    CloseWindow();    
+    CloseWindow();
 }

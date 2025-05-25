@@ -16,7 +16,7 @@ class Bomb
 public:
 	Bomb(Vector2 pos, int range = 2); // Rango 2 por defecto, cambiar luego si añadimos el modificador
 
-	bool UpdateState(float deltaTime, Map& map);
+	bool UpdateState(float deltaTime, Map& map, static Sound soundArray[]);
 
 	void DrawBomb(Texture2D bomba) const;
 
