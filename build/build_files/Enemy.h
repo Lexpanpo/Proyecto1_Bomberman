@@ -13,6 +13,14 @@ enum EnemyType {
     DORIA
 };
 
+enum EnemyState
+{
+    ALIVE,
+    DYING_1,
+    DYING_2,
+    DEAD
+};
+
 class Enemy
 {
 public:
@@ -20,13 +28,14 @@ public:
 
 	void Update(Map& map, float deltaTime, const vector<Bomb>& playerBombs);
 
-	void DrawEnemy(Texture2D enemy) const;
+	void Draw(Texture2D enemyTexture)const;
 
 	Rectangle GetRect() const;
 
     EnemyType GetType() const;
     int GetScoreValue() const;
 
+    EnemyState GetState() const;
 	bool IsAlive() const;
 	void Kill();
 
@@ -35,22 +44,26 @@ private:
     Rectangle rect;
 
     float speed;
-    float timer;
-    bool alive;
-
     int direction;
-    float moveTimer;
+    //float moveTimer;
 
-    float animationTimer = 0.0f;
-    int currentFrame = 0;
-    Rectangle sprite_status{ 0, 0, 16, 16 };
-    float frameSpeed = 0.3f;
-
+    bool alive;
+   
     void Move(Map& map, float deltaTime, const vector<Bomb>& playerBombs);
     void ChangeDirection();
 
     EnemyType type;
     int scoreValue;
+
+    Rectangle spriteStatus;
+    float animationTimer = 0.0f;
+    int currentFrame = 0;
+    float framespeed = 0.2f;
+    bool facingRight = true;
+
+    EnemyState state = ALIVE;
+    float deathTimer = 0.0f;
+    float deathFrameSpeed = 0.15f;
 
     //bool CheckCollisionWithMap(Map& map, Vector2 nextPos);
 };

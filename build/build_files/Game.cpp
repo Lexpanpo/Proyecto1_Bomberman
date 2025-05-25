@@ -138,8 +138,10 @@ void Game::Run()
     Texture2D bomba = LoadTexture("resources/bombermanSprites/General Sprites/Bomb_Sprites.png");
     Texture2D explosiones = LoadTexture("resources/bombermanSprites/General Sprites/Explosion_Sprites_v2.png");
     Texture2D walls = LoadTexture("resources/bombermanSprites/General Sprites/Walls_Sprites.png");
-    Texture2D explosion = LoadTexture("resources/bombermanSprites/General Sprites/Explosion_Sprites.png");
-    Texture2D enemy1 = LoadTexture("resources/bombermanSprites/General Sprites/Enemies_Sprites.png");
+
+    Texture2D ballomSprites = LoadTexture("resources/bombermanSprites/General Sprites/Ballom_Sprites.png");
+    Texture2D doriaSprites = LoadTexture("resources/bombermanSprites/General Sprites/Doria_Sprites.png");
+
 
     while (!WindowShouldClose())
     {
@@ -207,11 +209,10 @@ void Game::Run()
                     }
                 }
             }
-
             
             for (const Enemy& enemy : enemies)  //Colisiones del jugador y los enemigos
             {
-                if (!playerWasHit && enemy.IsAlive() && CheckCollisionRecs(player.GetPlayerRect(), enemy.GetRect()))
+                if (!playerWasHit && enemy.GetState() == EnemyState::ALIVE && CheckCollisionRecs(player.GetPlayerRect(), enemy.GetRect()))
                 {
                     player.TakeDamage();
                     playerWasHit = true;
@@ -327,16 +328,32 @@ void Game::Run()
             BeginMode2D(camera);
             map.DrawMap(walls);
             player.DrawPlayer(bomberman, bomba);
+
             // Dibujar Enemigos
             for (const Enemy& enemy : enemies)
             {
-                enemy.DrawEnemy(enemy1);
+                Texture2D currentTexture;
+
+                switch (enemy.GetType())
+                {
+                case BALLOM:
+                    currentTexture = ballomSprites;
+                    break;
+
+                case DORIA:
+                    currentTexture = doriaSprites;
+                    break;
+                }
+
+                enemy.Draw(currentTexture);
             }
+
             // Dibujar Explosiones
             for (const Explosion& e : explosions)
             {
                 e.DrawExplosion(explosiones);
             }
+
             EndMode2D();
 
             DrawText(TextFormat("Level: %d", currentLevel), 20, 20, 30, WHITE);
@@ -370,8 +387,9 @@ void Game::Run()
     UnloadTexture(bomba);
     UnloadTexture(explosiones);
     UnloadTexture(walls);
-    UnloadTexture(explosion);
-    UnloadTexture(enemy1);
+    UnloadTexture(ballomSprites);
+    UnloadTexture(doriaSprites);
+
     UnloadMusicStream(music);
     CloseAudioDevice();
     CloseWindow();    

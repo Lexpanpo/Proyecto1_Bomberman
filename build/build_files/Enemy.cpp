@@ -1,18 +1,26 @@
 #include "Enemy.h"
+#include "Bomb.h"
+
+#include <vector>
 #include <cstdlib>
 
 Enemy::Enemy(Vector2 startPos, EnemyType enemyType)
 {
 	alive = true;
 
-	pos = startPos;
+    state = ALIVE;
 
-	rect = { pos.x + 4, pos.y + 4, 32, 32 };
-	speed = 1.0f;
-    timer = 2.0f;
-	moveTimer = 0.0f;
+	pos = startPos;
+	rect = { pos.x + 4, pos.y + 4, 35, 35 };
+
+	//moveTimer = 0.0f;
 
     type = enemyType;
+
+    currentFrame = 0;
+    animationTimer = 0.0f;
+
+    spriteStatus = { 0.0f, 0.0f, 16.0f, 16.0f };
 
     switch (type)
     {
@@ -25,40 +33,103 @@ Enemy::Enemy(Vector2 startPos, EnemyType enemyType)
             scoreValue = 1000;
             break;
     }
-
 	ChangeDirection();	
 }
 
 void Enemy::Update(Map& map, float deltaTime, const vector<Bomb>& playerBombs)
 {
-	if (alive)
+    if (state == DEAD) return;
+
+	if (state == ALIVE)
 	{
+        Vector2 oldPos = pos;
 		Move(map, deltaTime, playerBombs);
+        bool moved = (pos.x != oldPos.x || pos.y != oldPos.y);
+
+        if (moved)
+        {
+            animationTimer += deltaTime;
+            if (animationTimer >= framespeed)
+            {
+                animationTimer = 0.0f;
+                currentFrame = (currentFrame + 1) % 3;
+            }
+        }
+        else
+        {
+            currentFrame = 1;
+            animationTimer = 0.0f;
+        }
+
+        if (this->direction == 1)
+        {
+            facingRight = true;
+        }
+        else if (this->direction == 2)
+        {
+            facingRight = false;
+
+        }
+
+        if (!facingRight)
+        {
+            spriteStatus.x = (currentFrame + 3) * 16;
+        }
+        else
+        {
+            spriteStatus.x = currentFrame * 16;
+        }
+
+        spriteStatus.y = 0.0f;
 	}
-
-    const int enemy_sprites_x[] = { 0, 16, 32, 48, 64,80 };
-    const int numFrames = 6;
-
-    animationTimer += deltaTime;
-
-    if (animationTimer >= frameSpeed)
+    else if (state == DYING_1)
     {
-        animationTimer = 0.0f;
-        currentFrame = (currentFrame + 1) % numFrames;
-        sprite_status.x = (float)enemy_sprites_x[currentFrame];
-    }
+        spriteStatus.x = 6 * 16;
+        spriteStatus.y = 0.0f;
 
-    timer -= deltaTime;
+        deathTimer += deltaTime;;
+
+        if (deathTimer >= 1.0f)
+        {
+            state = DYING_2;
+            deathTimer = 0.0f;
+            currentFrame = 7;
+        }
+    }
+    else if (state == DYING_2)
+    {
+        deathTimer += deltaTime;
+
+        if (deathTimer >= deathFrameSpeed)
+        {
+            deathTimer = 0.0f;
+            if (currentFrame < 10)
+            {
+                currentFrame++;
+            }
+            else
+            {
+                state = DEAD;
+                this->alive = false;
+            }
+        }
+
+        if (state == DYING_2)
+        {
+            spriteStatus.x = (float)currentFrame * 16.0f;
+            spriteStatus.y = 0.0f;
+        }
+    }
 }
 
-void Enemy::DrawEnemy(Texture2D enemy) const
+void Enemy::Draw(Texture2D enemyTexture) const
 {
-	if (alive)
+	if (state != DEAD)
 	{
-	/*	DrawRectangleRec(rect, PURPLE);*/
-        Rectangle enemyRecorte = { sprite_status.x,sprite_status.y,16,16 };
-        Rectangle enemyPosYtamaño = { pos.x, pos.y,20 * 2 , 20 * 2 };
-        DrawTexturePro(enemy, enemyRecorte, enemyPosYtamaño, { 0,0 }, 0, WHITE);
+        //Rectangle destRect = { pos.x, pos.y, 40, 40 };
+        DrawTexturePro(enemyTexture, spriteStatus, this->rect, { 0,0 }, 0, WHITE);
+		//DrawRectangleRec(rect, PURPLE);
+        DrawRectangleLines(rect.x, rect.y, rect.width, rect.height, RED); //  Debug para ver los colliders del jugador
 
 	}
 }
@@ -102,7 +173,6 @@ void Enemy::Move(Map& map, float deltaTime, const vector<Bomb>& playerBombs)
     // Colisiones con el mapa y las bombas
 
     bool ignoreSoftBlocks = (this->type == EnemyType::DORIA);
-
     bool collisionDetected = map.CheckCollisions(nextRect, ignoreSoftBlocks);
 
     if (!collisionDetected)
@@ -139,12 +209,24 @@ void Enemy::Move(Map& map, float deltaTime, const vector<Bomb>& playerBombs)
     }
 }
 
+EnemyState Enemy::GetState() const
+{
+    return state;
+}
+
 bool Enemy::IsAlive() const
 {
-	return alive;
+	return state != DEAD;
 }
 
 void Enemy::Kill()
 {
-	alive = false;
+	//alive = false;
+
+    if (state == ALIVE)
+    {
+        state = DYING_1;
+        deathTimer = 0.0f;
+        currentFrame = 6;
+    }
 }
