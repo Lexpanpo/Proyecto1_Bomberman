@@ -42,7 +42,7 @@ Game::Game()
 	camera.target = { 0, 0 };
 	camera.offset = { GetScreenWidth() / 2.0f, GetScreenHeight() / 2.0f };
 	camera.rotation = 0;
-	camera.zoom = 2;
+	camera.zoom = 1.5;
 }
 
 Game::~Game()
@@ -92,9 +92,12 @@ void SpawnEnemiesForLevel(int level, Map& map, vector<Enemy>& enemies) // Funció
                 }
             }
         } while (!validSpawn && attempts < 1000);   // Limite de intentos (Lo he puesto en 1000 pero se puede bajar)
+
+        EnemyType type = (GetRandomValue(1, 10) <= 7) ? EnemyType::BALLOM : EnemyType::DORIA;
+
         if (validSpawn) 
         { 
-            enemies.push_back(Enemy({ (float)gridX * 40.0f, (float)gridY * 40.0f }));
+            enemies.push_back(Enemy({ (float)gridX * 40.0f, (float)gridY * 40.0f }, type));
         }
         else 
         {
@@ -133,6 +136,7 @@ void Game::Run()
     Texture2D WinScreen = LoadTexture("resources/bombermanSprites/UI/NES- Bomberman - Win screen.png");
     Texture2D bomberman = LoadTexture("resources/bombermanSprites/General Sprites/Player_Sprites.png");
     Texture2D bomba = LoadTexture("resources/bombermanSprites/General Sprites/Bomb_Sprites.png");
+    Texture2D explosiones = LoadTexture("resources/bombermanSprites/General Sprites/Explosion_Sprites_v2.png");
     Texture2D walls = LoadTexture("resources/bombermanSprites/General Sprites/Walls_Sprites.png");
     Texture2D explosion = LoadTexture("resources/bombermanSprites/General Sprites/Explosion_Sprites.png");
     Texture2D enemy1 = LoadTexture("resources/bombermanSprites/General Sprites/Enemies_Sprites.png");
@@ -162,6 +166,7 @@ void Game::Run()
             }
 
             player.UpdatePlayer(map);
+            map.Update(deltaTime);
 
             for (Enemy& enemy : enemies)
             {
@@ -197,6 +202,7 @@ void Game::Run()
                 {
                     if (enemy.IsAlive() && CheckCollisionRecs(e.GetExplosionRect(), enemy.GetRect()))
                     {
+                        score += enemy.GetScoreValue();
                         enemy.Kill();
                     }
                 }
@@ -256,12 +262,12 @@ void Game::Run()
             }
 
             // Teclas de Debug
-            if (IsKeyReleased(KEY_P)) //    Hacer Daño al jugador
+            if (IsKeyReleased(KEY_P)) // P: Hacer Daño al jugador
             {
                 player.SetPlayerPos();
                 player.TakeDamage();
             }
-            if (IsKeyReleased(KEY_C)) //    Eliminar todos los SoftBlocks
+            if (IsKeyReleased(KEY_C)) // C: Eliminar todos los SoftBlocks
             {
                 map.ClearMap();
             }
@@ -316,6 +322,8 @@ void Game::Run()
         }
         case GAMEPLAY:
         {
+            ClearBackground(GRAY);
+
             BeginMode2D(camera);
             map.DrawMap(walls);
             player.DrawPlayer(bomberman, bomba);
@@ -327,11 +335,14 @@ void Game::Run()
             // Dibujar Explosiones
             for (const Explosion& e : explosions)
             {
-                e.DrawExplosion(explosion);
+                e.DrawExplosion(explosiones);
             }
             EndMode2D();
 
             DrawText(TextFormat("Level: %d", currentLevel), 20, 20, 30, WHITE);
+
+            DrawText(TextFormat("Score: %06d", score), GetScreenWidth() / 2 - 100, 20, 30, WHITE);
+
             DrawText(TextFormat("Lives: %d", player.GetCurrentHp()), GetScreenWidth() - 150, 20, 30, WHITE);
 
             break;
@@ -357,6 +368,7 @@ void Game::Run()
     UnloadTexture(WinScreen);
     UnloadTexture(bomberman);
     UnloadTexture(bomba);
+    UnloadTexture(explosiones);
     UnloadTexture(walls);
     UnloadTexture(explosion);
     UnloadTexture(enemy1);

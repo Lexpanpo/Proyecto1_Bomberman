@@ -1,7 +1,7 @@
 #include "Enemy.h"
 #include <cstdlib>
 
-Enemy::Enemy(Vector2 startPos)
+Enemy::Enemy(Vector2 startPos, EnemyType enemyType)
 {
 	alive = true;
 
@@ -11,9 +11,21 @@ Enemy::Enemy(Vector2 startPos)
 	speed = 1.0f;
     timer = 2.0f;
 	moveTimer = 0.0f;
-    animationTimer = 0.0f;
-    currentFrame = 0;
-    sprite_status = { 0, 0, 16, 16 };
+
+    type = enemyType;
+
+    switch (type)
+    {
+        case BALLOM:
+            speed = 1.0f;
+            scoreValue = 100;
+            break;
+        case DORIA:
+            speed = 0.5f;
+            scoreValue = 1000;
+            break;
+    }
+
 	ChangeDirection();	
 }
 
@@ -56,6 +68,16 @@ Rectangle Enemy::GetRect() const
 	return rect;
 }
 
+EnemyType Enemy::GetType() const
+{
+    return type;
+}
+
+int Enemy::GetScoreValue() const
+{
+    return scoreValue;
+}
+
 void Enemy::ChangeDirection()
 {
 	direction = GetRandomValue(0, 3); // 0 --> Abajo, 1 --> Derecha, 2 --> Izquierda, 3 --> Arriba
@@ -79,7 +101,9 @@ void Enemy::Move(Map& map, float deltaTime, const vector<Bomb>& playerBombs)
 
     // Colisiones con el mapa y las bombas
 
-    bool collisionDetected = map.CheckCollisions(nextRect);
+    bool ignoreSoftBlocks = (this->type == EnemyType::DORIA);
+
+    bool collisionDetected = map.CheckCollisions(nextRect, ignoreSoftBlocks);
 
     if (!collisionDetected)
     {

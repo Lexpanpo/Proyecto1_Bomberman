@@ -47,22 +47,37 @@ void Map::DrawMap(Texture2D walls) const
 		{
 			Rectangle dest = { x * 40, y * 40 ,40 ,40 };
 
+			DrawRectangle(x * 40, y * 40, 40, 40, DARKGREEN);
+
+
 			if (grid[y][x] == 1)
 			{				
 				//Color color = GRAY;
-				DrawRectangle(x * 40, y * 40, 40, 40, DARKGREEN);
 				DrawTexturePro(walls, hardBlocksRecorte, dest, origen, 0, WHITE);
 			}
 			else if (grid[y][x] == 2)
 			{
 				//Color color = LIGHTGRAY;
-				DrawRectangle(x * 40, y * 40, 40, 40, DARKGREEN);
 				DrawTexturePro(walls, softBlocksRecorte, dest, origen, 0, WHITE);
 			}
-			else
+			else if(grid[y][x] == 3)
 			{
-				//Color color = DARKGREEN;
-				DrawRectangle(x * 40, y * 40, 40, 40, DARKGREEN);
+				bool found = false;
+
+				for (const AnimatingBlock& block : animatingBlocks) 
+				{
+					if ((int)block.pos.x == x && (int)block.pos.y == y) 
+					{						
+						Rectangle animRec = { 16.0f + block.frame * 16.0f, 0, 16, 16 };
+						DrawTexturePro(walls, animRec, dest, origen, 0, WHITE);
+						found = true;
+						break;
+					}
+				}
+				if (!found) 
+				{
+					DrawTexturePro(walls, softBlocksRecorte, dest, origen, 0, WHITE);
+				}
 			}
 		}
 	}
@@ -75,13 +90,25 @@ void Map::DrawMap(Texture2D walls) const
 	}
 }
 
-bool Map::CheckCollisions(Rectangle& playerRect)
+bool Map::CheckCollisions(Rectangle& playerRect, bool ignoreSoftB)
 {
 	for (int y = 0; y < 13; y++)
 	{
 		for (int x = 0; x < 31; x++)
 		{
-			if (grid[y][x] == 1 || grid[y][x] == 2)
+			int tileType = grid[y][x];
+			bool isSolid = false;
+
+			if (tileType == 1)
+			{
+				isSolid = true;
+			}
+			else if (!ignoreSoftB && (tileType == 2 || tileType == 3))
+			{
+				isSolid = true;
+			}
+
+			if (isSolid)
 			{
 				Rectangle tileRect = { x * 40, y * 40, 40, 40 };
 
@@ -89,7 +116,7 @@ bool Map::CheckCollisions(Rectangle& playerRect)
 				{
 					return true;
 				}
-			}			
+			}
 		}
 	}
 
@@ -108,16 +135,27 @@ bool Map::BreakTile(int gridX, int gridY)
 		return true;
 	}
 
+	if (grid[gridY][gridX] == 3)
+	{
+		return true;
+	}
+
 	if (grid[gridY][gridX] == 2)
 	{
-		grid[gridY][gridX] = 0;
+		bool spawnDoor = !doorSpawned && GetRandomValue(1, 5) == 1;
 
-		if (!doorSpawned && GetRandomValue(1, 5) == 1)
+		if (spawnDoor)
 		{
+			grid[gridY][gridX] = 0;
+
 			doorPos = { gridX * 40.0f, gridY * 40.0f };
 			doorSpawned = true;
 		}
-
+		else
+		{
+			grid[gridY][gridX] = 3;
+			animatingBlocks.push_back({ (float)gridX, (float)gridY });
+		}
 		return true;
 	}
 
@@ -154,6 +192,16 @@ bool Map::IsTileEmpty(int gridX, int gridY) const
 	}
 
 	return grid[gridY][gridX] == 0;
+}
+
+int Map::GetTileType(int gridX, int gridY) const
+{
+	if (gridX < 0 || gridX >= 31 || gridY < 0 || gridY >= 13)
+	{
+		return 1;
+	}
+
+	return grid[gridY][gridX];
 }
 
 bool Map::IsDoorSpawned()
@@ -240,4 +288,32 @@ void Map::ResetLevel()
 	}
 
 	PlaceSoftBlocks();
+}
+
+void Map::Update(float deltaTime)
+{
+	for (int i = 0; i < animatingBlocks.size(); )
+	{
+		animatingBlocks[i].timer += deltaTime;
+		
+		if (animatingBlocks[i].timer >= blockFrameSpeed)
+		{
+			animatingBlocks[i].timer = 0.0f;
+			animatingBlocks[i].frame++;
+		}
+
+		if (animatingBlocks[i].frame >= 7) 
+		{
+			int x = animatingBlocks[i].pos.x;
+			int y = animatingBlocks[i].pos.y;
+
+			grid[y][x] = 0;
+
+			animatingBlocks.erase(animatingBlocks.begin() + i);
+		}
+		else
+		{
+			i++; 
+		}
+	}
 }

@@ -8,16 +8,24 @@
 
 using namespace std;
 
+enum EnemyType {
+    BALLOM,
+    DORIA
+};
+
 class Enemy
 {
 public:
-	Enemy(Vector2 startPos);
+	Enemy(Vector2 startPos, EnemyType type);
 
 	void Update(Map& map, float deltaTime, const vector<Bomb>& playerBombs);
 
 	void DrawEnemy(Texture2D enemy) const;
 
 	Rectangle GetRect() const;
+
+    EnemyType GetType() const;
+    int GetScoreValue() const;
 
 	bool IsAlive() const;
 	void Kill();
@@ -31,7 +39,6 @@ private:
     bool alive;
 
     int direction;
-
     float moveTimer;
 
     float animationTimer = 0.0f;
@@ -42,7 +49,9 @@ private:
     void Move(Map& map, float deltaTime, const vector<Bomb>& playerBombs);
     void ChangeDirection();
 
-    //bool CheckCollisionWithMap(Map& map, Vector2 nextPos);
+    EnemyType type;
+    int scoreValue;
 
+    //bool CheckCollisionWithMap(Map& map, Vector2 nextPos);
 };
 
