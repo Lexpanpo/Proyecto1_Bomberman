@@ -151,7 +151,7 @@ void Game::Run()
             {
                 if (enemy.IsAlive())
                 {
-                    enemy.Update(map, deltaTime);
+                    enemy.Update(map, deltaTime, player.bombs);
                 }
             }
 

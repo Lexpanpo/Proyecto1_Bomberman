@@ -13,11 +13,11 @@ Enemy::Enemy(Vector2 startPos)
 	ChangeDirection();	
 }
 
-void Enemy::Update(Map& map, float deltaTime)
+void Enemy::Update(Map& map, float deltaTime, const vector<Bomb>& playerBombs)
 {
 	if (alive)
 	{
-		Move(map, deltaTime);
+		Move(map, deltaTime, playerBombs);
 	}
 }
 
@@ -39,10 +39,11 @@ void Enemy::ChangeDirection()
 	direction = GetRandomValue(0, 3); // 0 --> Abajo, 1 --> Derecha, 2 --> Izquierda, 3 --> Arriba
 }
 
-void Enemy::Move(Map& map, float deltaTime)
+void Enemy::Move(Map& map, float deltaTime, const vector<Bomb>& playerBombs)
 {
     Vector2 nextPos = pos;
     float moveAmount = speed;
+    Rectangle currentRec = rect;
 
     switch (direction)
     {
@@ -54,7 +55,28 @@ void Enemy::Move(Map& map, float deltaTime)
 
     Rectangle nextRect = { nextPos.x + 4, nextPos.y + 4, rect.width, rect.height }; // Creo un rectángulo para ver si en la siguiente posición hay algun bloque
 
-    if (map.CheckCollisions(nextRect))
+    // Colisiones con el mapa y las bombas
+
+    bool collisionDetected = map.CheckCollisions(nextRect);
+
+    if (!collisionDetected)
+    {
+        for (const Bomb& b : playerBombs)
+        {
+            Rectangle bombRect = b.GetRect();
+
+            if (CheckCollisionRecs(nextRect, bombRect))
+            {
+                if (!CheckCollisionRecs(currentRec, bombRect))
+                {
+                    collisionDetected = true;
+                    break;
+                }
+            }
+        }
+    }
+
+    if (collisionDetected)
     {
         ChangeDirection();
     }

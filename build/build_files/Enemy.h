@@ -1,14 +1,19 @@
 #pragma once
 
-#include "raylib.h"
 #include "Map.h"
+#include "Bomb.h"
+
+#include <vector>
+#include "raylib.h"
+
+using namespace std;
 
 class Enemy
 {
 public:
 	Enemy(Vector2 startPos);
 
-	void Update(Map& map, float deltaTime);
+	void Update(Map& map, float deltaTime, const vector<Bomb>& playerBombs);
 
 	void Draw()const;
 
@@ -30,10 +35,10 @@ private:
     float moveTimer;
 
    
-    void Move(Map& map, float deltaTime);
+    void Move(Map& map, float deltaTime, const vector<Bomb>& playerBombs);
     void ChangeDirection();
 
-    bool CheckCollisionWithMap(Map& map, Vector2 nextPos);
+    //bool CheckCollisionWithMap(Map& map, Vector2 nextPos);
 
 };
 

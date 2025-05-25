@@ -110,6 +110,11 @@ void Bomb::DrawBomb(Texture2D bomba) const
 
 }
 
+Rectangle Bomb::GetRect() const
+{
+	return { pos.x, pos.y, 40.0f, 40.0f };
+}
+
 //void Bomb::Update(float delta) const
 //{
 //	animationTimer += delta;

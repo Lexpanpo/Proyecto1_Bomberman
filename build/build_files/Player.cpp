@@ -16,6 +16,7 @@ void Player::UpdatePlayer(Map& map)
 
     int wasLooking = mirando;
 
+    // Movimiento
     if (IsKeyDown(KEY_RIGHT))
     {
         rect.x += playerSpeed;
@@ -41,13 +42,32 @@ void Player::UpdatePlayer(Map& map)
         isMoving = true;
     }
 
-    if (map.CheckCollisions(rect))
+    // Colisiones
+    bool collisionDetected = map.CheckCollisions(rect);
+
+    if (!collisionDetected) 
     {
-        rect = oldRect;
-        
-        isMoving = false;
+        for (const Bomb& b : bombs)
+        {
+            Rectangle bombRect = b.GetRect();
+
+            if (CheckCollisionRecs(rect, bombRect))
+            {
+                if ((!CheckCollisionRecs(oldRect, bombRect)))
+                {
+                    collisionDetected = true;
+                    break;
+                }
+            }
+        }
     }
 
+    if (collisionDetected)
+    {
+        rect = oldRect;
+    }
+
+    // Animaciones
     const int walk_lft_rght[] = { 2, 18, 34 };  // Coordenadas sprites para cuando se mueve a Izquierda/Derecha
     const int walk_up_dwn[] = { 50, 66, 82 }; // Coordenadas sprites para cuando se mueve a Arriba/Abajo
     const int numFrames = 3;

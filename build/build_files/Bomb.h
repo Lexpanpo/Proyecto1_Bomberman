@@ -20,6 +20,8 @@ public:
 
 	void DrawBomb(Texture2D bomba) const;
 
+	Rectangle GetRect() const;
+
 	//void Update(float delta) const;
 
 private:
