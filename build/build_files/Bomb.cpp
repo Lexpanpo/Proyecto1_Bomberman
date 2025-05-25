@@ -57,7 +57,7 @@ void Bomb::Explode(Map& map)
 
 	explosions.push_back(Explosion({ centerX * 40.0f, centerY * 40.0f }));
 
-	int range = 1; // + RangeModifier;
+	int range = 2; // + RangeModifier;
 
 	for (int dx = -1; dx <= 1; dx++)
 	{

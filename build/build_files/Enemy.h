@@ -15,7 +15,7 @@ public:
 
 	void Update(Map& map, float deltaTime, const vector<Bomb>& playerBombs);
 
-	void Draw()const;
+	void DrawEnemy(Texture2D enemy) const;
 
 	Rectangle GetRect() const;
 
@@ -27,14 +27,18 @@ private:
     Rectangle rect;
 
     float speed;
-
+    float timer;
     bool alive;
 
     int direction;
 
     float moveTimer;
 
-   
+    float animationTimer = 0.0f;
+    int currentFrame = 0;
+    Rectangle sprite_status{ 0, 0, 16, 16 };
+    float frameSpeed = 0.3f;
+
     void Move(Map& map, float deltaTime, const vector<Bomb>& playerBombs);
     void ChangeDirection();
 

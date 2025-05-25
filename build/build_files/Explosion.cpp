@@ -9,9 +9,12 @@ bool Explosion::UpdateStatus(float deltaTime)
 	return timer <= 0;
 }
 
-void Explosion::DrawExplosion() const
+void Explosion::DrawExplosion(Texture2D explosion) const
 {
-	DrawRectangle(pos.x + 5, pos.y + 5, 30, 30, RED);
+	/*DrawRectangle(pos.x + 5, pos.y + 5, 30, 30, RED);*/
+	Rectangle explosionRecorte = { sprite_status.x,sprite_status.y,80,80 };
+	Rectangle explosionPosYtamaño = { pos.x, pos.y,40 , 40  };
+	DrawTexturePro(explosion, explosionRecorte, explosionPosYtamaño, { 0,0 }, 0, WHITE);
 }
 
 Rectangle Explosion::GetExplosionRect() const

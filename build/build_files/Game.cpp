@@ -134,6 +134,8 @@ void Game::Run()
     Texture2D bomberman = LoadTexture("resources/bombermanSprites/General Sprites/Player_Sprites.png");
     Texture2D bomba = LoadTexture("resources/bombermanSprites/General Sprites/Bomb_Sprites.png");
     Texture2D walls = LoadTexture("resources/bombermanSprites/General Sprites/Walls_Sprites.png");
+    Texture2D explosion = LoadTexture("resources/bombermanSprites/General Sprites/Explosion_Sprites.png");
+    Texture2D enemy1 = LoadTexture("resources/bombermanSprites/General Sprites/Enemies_Sprites.png");
 
     while (!WindowShouldClose())
     {
@@ -320,12 +322,12 @@ void Game::Run()
             // Dibujar Enemigos
             for (const Enemy& enemy : enemies)
             {
-                enemy.Draw();
+                enemy.DrawEnemy(enemy1);
             }
             // Dibujar Explosiones
             for (const Explosion& e : explosions)
             {
-                e.DrawExplosion();
+                e.DrawExplosion(explosion);
             }
             EndMode2D();
 
@@ -356,6 +358,8 @@ void Game::Run()
     UnloadTexture(bomberman);
     UnloadTexture(bomba);
     UnloadTexture(walls);
+    UnloadTexture(explosion);
+    UnloadTexture(enemy1);
     UnloadMusicStream(music);
     CloseAudioDevice();
     CloseWindow();    

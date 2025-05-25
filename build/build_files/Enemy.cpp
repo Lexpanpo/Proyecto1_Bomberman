@@ -9,7 +9,11 @@ Enemy::Enemy(Vector2 startPos)
 
 	rect = { pos.x + 4, pos.y + 4, 32, 32 };
 	speed = 1.0f;
+    timer = 2.0f;
 	moveTimer = 0.0f;
+    animationTimer = 0.0f;
+    currentFrame = 0;
+    sprite_status = { 0, 0, 16, 16 };
 	ChangeDirection();	
 }
 
@@ -19,13 +23,31 @@ void Enemy::Update(Map& map, float deltaTime, const vector<Bomb>& playerBombs)
 	{
 		Move(map, deltaTime, playerBombs);
 	}
+
+    const int enemy_sprites_x[] = { 0, 16, 32, 48, 64,80 };
+    const int numFrames = 6;
+
+    animationTimer += deltaTime;
+
+    if (animationTimer >= frameSpeed)
+    {
+        animationTimer = 0.0f;
+        currentFrame = (currentFrame + 1) % numFrames;
+        sprite_status.x = (float)enemy_sprites_x[currentFrame];
+    }
+
+    timer -= deltaTime;
 }
 
-void Enemy::Draw() const
+void Enemy::DrawEnemy(Texture2D enemy) const
 {
 	if (alive)
 	{
-		DrawRectangleRec(rect, PURPLE);
+	/*	DrawRectangleRec(rect, PURPLE);*/
+        Rectangle enemyRecorte = { sprite_status.x,sprite_status.y,16,16 };
+        Rectangle enemyPosYtamaño = { pos.x, pos.y,20 * 2 , 20 * 2 };
+        DrawTexturePro(enemy, enemyRecorte, enemyPosYtamaño, { 0,0 }, 0, WHITE);
+
 	}
 }
 
