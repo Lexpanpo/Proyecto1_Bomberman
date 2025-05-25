@@ -1,6 +1,7 @@
 #include "Map.h"
 
 #include <iostream>
+#include <vector>
 #include <cstdlib>
 #include <ctime>
 #include "raylib.h"
@@ -157,6 +158,42 @@ Vector2 Map::GetDoorPos()
 	return doorPos;
 }
 
+void Map::SpawnDoor()
+{
+	if (doorSpawned) return;
+
+	vector<Vector2> softBlocks;
+
+	for (int y = 0; y < 13; y++)
+	{
+		for (int x = 0; x < 31; x++) 
+		{
+			if (grid[x][y] == 2)
+			{
+				softBlocks.push_back({ (float)x, (float)y });
+			}
+		}
+	}
+
+	if (!softBlocks.empty())
+	{
+		Vector2 chosenBlock = softBlocks[GetRandomValue(0, softBlocks.size() - 1)];
+
+		grid[(int)chosenBlock.x][(int)chosenBlock.y] = 0;
+		doorPos = { chosenBlock.x * 40, chosenBlock.y * 40 };
+
+		doorSpawned = true;
+		cout << "SE HA GENERADO LA PERTA EN: " << doorPos.x << ", " << doorPos.y << endl;
+	}
+	else
+	{
+		cout << "No hay softblocks para generar la puerta!! Se ha colocado una en (1,3)" << endl;
+		doorPos = { 1 * 40.0f, 3 * 40.0f };
+		doorSpawned = true;
+	}
+	
+}
+
 void Map::ClearMap()
 {
 	for (int y = 0; y < 13; y++)
@@ -173,8 +210,26 @@ void Map::ClearMap()
 		}
 	}
 }
-//
-//void Map::ResetLevel()
-//{
-//	DrawMap();
-//}
+
+void Map::ResetLevel()
+{
+	doorSpawned = false;
+	doorPos = { -1, -1 };
+
+	for (int y = 0; y < 13; y++)
+	{
+		for (int x = 0; x < 31; x++)
+		{
+			if (y == 0 || y == 12 || x == 0 || x == 30 || (y % 2 == 0 && x % 2 == 0))
+			{
+				grid[y][x] = 1;
+			}
+			else
+			{
+				grid[y][x] = 0;
+			}
+		}
+	}
+
+	PlaceSoftBlocks();
+}

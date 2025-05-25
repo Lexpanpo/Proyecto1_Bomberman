@@ -57,6 +57,65 @@ Game::~Game()
 	CloseWindow();
 }
 
+
+void SpawnEnemiesForLevel(int level, Map& map, vector<Enemy>& enemies) // Función para generar enemigos según el nivel 
+{
+    enemies.clear();
+    int enemiesToSpawn = 3 + (level - 1) * 2; // 3 al principio y +2 cada nivel
+
+    for (int i = 0; i < enemiesToSpawn; ++i)
+    {
+        int gridX, gridY;
+        bool validSpawn;
+        int attempts = 0; // Variable para qque el bucle no sea infinito
+
+        do {
+            validSpawn = true;
+            attempts++;
+            gridX = GetRandomValue(1, 29);
+            gridY = GetRandomValue(1, 11);
+
+            if (!map.IsTileEmpty(gridX, gridY)) 
+            { 
+                validSpawn = false; continue;
+            }
+            if (gridX <= 3 && gridY <= 3)
+            { 
+                validSpawn = false; continue; 
+            }
+            for (const Enemy& existingEnemy : enemies) // Bucle para comprobar si ya hay un enemigo en esa posicion
+            {
+                Rectangle r = existingEnemy.GetRect();
+                if ((int)(r.x / 40.0f) == gridX && (int)(r.y / 40.0f) == gridY)
+                { 
+                    validSpawn = false; break; 
+                }
+            }
+        } while (!validSpawn && attempts < 1000);   // Limite de intentos (Lo he puesto en 1000 pero se puede bajar)
+        if (validSpawn) 
+        { 
+            enemies.push_back(Enemy({ (float)gridX * 40.0f, (float)gridY * 40.0f }));
+        }
+        else 
+        {
+            cout << "NO SE HA ENCONTRADO ESPACIO PARA EL ENEMIGO! " << i + 1 << endl;
+        }
+    }
+}
+
+
+void LoadLevel(int level, Player& player, Map& map, vector<Enemy>& enemies, bool& gameplayInitialized) // Función para cargar/reiniciar un nivel
+{
+    cout << "CARGANDO NIVEL " << level << endl;
+    player.SetPlayerPos();
+    player.bombs.clear();
+    map.ResetLevel();
+    SpawnEnemiesForLevel(level, map, enemies);
+    explosions.clear();
+    gameplayInitialized = true;
+    player.wasHit = false;
+}
+
 void Game::Run()
 {
     Player player;
@@ -64,6 +123,8 @@ void Game::Run()
 
     vector<Enemy> enemies;
     bool isPlaying = false;
+
+    int currentLevel = 1;
 
     enum GameState { SPLASH, TITLE, GAMEPLAY, WIN, DEATH};
     GameState currentState = SPLASH;
@@ -95,54 +156,7 @@ void Game::Run()
         {
             if (!isPlaying)
             {
-                int enemiesToSpawn = 5; // Numero de enmeigos que se spawnean
-
-                for (int i = 0; i < enemiesToSpawn; ++i)
-                {
-                    int gridX, gridY;
-                    bool validSpawn;
-                    int attempts = 0; // Variable para qque el bucle no sea infinito
-
-                    do {
-                        validSpawn = true;
-                        attempts++;
-
-                        gridX = GetRandomValue(1, 29);
-                        gridY = GetRandomValue(1, 11);
-
-                        if (!map.IsTileEmpty(gridX, gridY)) {
-                            validSpawn = false;
-                            continue;
-                        }
-
-                        if (gridX <= 3 && gridY <= 3) {
-                            validSpawn = false;
-                            continue;
-                        }
-
-                        for (const Enemy& existingEnemy : enemies) //   Bucle para comprobar si ya hay un enemigo en esa posicion
-                        {
-                            Rectangle r = existingEnemy.GetRect();
-                            int enemyGridX = (int)(r.x / 40.0f);
-                            int enemyGridY = (int)(r.y / 40.0f);
-                            if (gridX == enemyGridX && gridY == enemyGridY) {
-                                validSpawn = false;
-                                break;
-                            }
-                        }
-
-                        
-                    } while (!validSpawn && attempts < 1000); //    Limite de intentos (Lo he puesto en 1000 pero se puede bajar)
-
-                    if (validSpawn) {
-                        enemies.push_back(Enemy({ (float)gridX * 40.0f, (float)gridY * 40.0f }));
-                    }
-                    else {
-                        cout << "NO SE HA ENCONTRADO ESPACIO PARA EL ENEMIGO! " << i + 1 << endl;
-                    }
-                }
-
-                isPlaying = true;
+                LoadLevel(currentLevel, player, map, enemies, isPlaying);
             }
 
             player.UpdatePlayer(map);
@@ -201,18 +215,42 @@ void Game::Run()
                 [](const Enemy& e) { return !e.IsAlive(); }),
                 enemies.end());
 
+            if (enemies.empty() && !map.IsDoorSpawned())
+            {
+                map.SpawnDoor();
+            }
+            if (map.IsDoorSpawned())
+            {
+                Rectangle doorRect = { map.GetDoorPos().x, map.GetDoorPos().y, 40, 40 };
+
+                if (CheckCollisionRecs(player.GetPlayerRect(), doorRect) && IsKeyPressed(KEY_ENTER)) {
+                    currentLevel++;
+                    if (currentLevel > 4) 
+                    {
+                        currentState = WIN;
+                    }
+                    else 
+                    {
+                        isPlaying = false;
+                    }
+                    goto gameplay_end;
+                }
+            }
+
             if (player.GetCurrentHp() <= 0)
             {
                 currentState = DEATH;
-                enemies.clear();
                 isPlaying = false;
+                //enemies.clear();
             }
             else if (playerWasHit)
             {
                 player.SetPlayerPos();
                 explosions.clear();
-                enemies.clear();
-                isPlaying = false;
+                player.bombs.clear();
+                player.wasHit = false;
+                //enemies.clear();
+                //isPlaying = false;
             }
 
             // Teclas de Debug
@@ -227,10 +265,10 @@ void Game::Run()
             }
 
             // Condición de Victoria
-            if (player.victoryStatus())
+           /* if (player.victoryStatus())
             {
                 currentState = WIN;
-            }
+            }*/
 
             // Actualizar Cámara
             Vector2 targetPos = player.GetPlayerPos();
@@ -244,6 +282,7 @@ void Game::Run()
             if (camera.target.x > mapWidth - halfWidth) camera.target.x = mapWidth - halfWidth;
             if (camera.target.y > mapHeight - halfHeight) camera.target.y = mapHeight - halfHeight;
 
+        gameplay_end:;
             break;
         }
         case WIN:
@@ -289,6 +328,9 @@ void Game::Run()
                 e.DrawExplosion();
             }
             EndMode2D();
+
+            DrawText(TextFormat("Level: %d", currentLevel), 20, 20, 30, WHITE);
+            DrawText(TextFormat("Lives: %d", player.GetCurrentHp()), GetScreenWidth() - 150, 20, 30, WHITE);
 
             break;
         }

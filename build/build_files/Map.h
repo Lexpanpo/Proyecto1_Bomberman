@@ -19,9 +19,10 @@ public:
 
 	bool IsDoorSpawned();
 	Vector2 GetDoorPos();
+	void SpawnDoor();
 
 	void ClearMap();
-	//void ResetLevel();
+	void ResetLevel();
 
 private:
 	int grid[13][31];
