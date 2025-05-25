@@ -35,35 +35,43 @@ Map::Map()
 
 void Map::DrawMap(Texture2D walls) const
 {
+	Rectangle hardBlocksRecorte = { 0, 0 ,16,16 };
+	Rectangle softBlocksRecorte = { 16, 0 ,16,16 };
+	Rectangle doorRecorte = { 128, 0 ,16,16 };
+	
+	Vector2 origen = { 0, 0 };
 
 	for (int y = 0; y < 13; y++)
 	{
 		for (int x = 0; x < 31; x++)
 		{
+			Rectangle dest = { x * 40, y * 40 ,40 ,40 };
+
 			if (grid[y][x] == 1)
-			{
-				//Rectangle wallsRecorte = { 0, 0 ,16,16 };
-				//Rectangle wallsPosYtamaño = { x, y, 16, 16 };
-				//DrawTexturePro(walls, wallsRecorte, wallsPosYtamaño, { 0,0 }, 0, WHITE);
-				Color color = GRAY;
-				DrawRectangle(x * 40, y * 40, 40, 40, color);
+			{				
+				//Color color = GRAY;
+				DrawRectangle(x * 40, y * 40, 40, 40, DARKGREEN);
+				DrawTexturePro(walls, hardBlocksRecorte, dest, origen, 0, WHITE);
 			}
 			else if (grid[y][x] == 2)
 			{
-				Color color = LIGHTGRAY;
-				DrawRectangle(x * 40, y * 40, 40, 40, color);
+				//Color color = LIGHTGRAY;
+				DrawRectangle(x * 40, y * 40, 40, 40, DARKGREEN);
+				DrawTexturePro(walls, softBlocksRecorte, dest, origen, 0, WHITE);
 			}
 			else
 			{
-				Color color = DARKGREEN;
-				DrawRectangle(x * 40, y * 40, 40, 40, color);
+				//Color color = DARKGREEN;
+				DrawRectangle(x * 40, y * 40, 40, 40, DARKGREEN);
 			}
 		}
 	}
 
 	if (doorSpawned)
 	{
-		DrawRectangleV(doorPos, { 40,40 }, BLUE);
+		Rectangle doorDestRec = { doorPos.x, doorPos.y, 40, 40 };
+		DrawTexturePro(walls, doorRecorte, doorDestRec, origen, 0, WHITE);
+		//DrawRectangleV(doorPos, { 40,40 }, BLUE);
 	}
 }
 
