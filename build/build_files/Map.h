@@ -16,6 +16,7 @@ public:
 	void PlaceSoftBlocks();
 
 	bool IsTileEmpty(int gridX, int gridY) const;
+	int GetTileType(int gridX, int gridY) const;
 
 	bool IsDoorSpawned();
 	Vector2 GetDoorPos();

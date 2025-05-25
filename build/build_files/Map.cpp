@@ -156,6 +156,16 @@ bool Map::IsTileEmpty(int gridX, int gridY) const
 	return grid[gridY][gridX] == 0;
 }
 
+int Map::GetTileType(int gridX, int gridY) const
+{
+	if (gridX < 0 || gridX >= 31 || gridY < 0 || gridY >= 13)
+	{
+		return 1;
+	}
+
+	return grid[gridY][gridX];
+}
+
 bool Map::IsDoorSpawned()
 {
 	return doorSpawned;

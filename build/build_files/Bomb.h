@@ -14,7 +14,7 @@ extern vector<Explosion> explosions;
 class Bomb
 {
 public:
-	Bomb(Vector2 pos);
+	Bomb(Vector2 pos, int range = 2); // Rango 2 por defecto, cambiar luego si añadimos el modificador
 
 	bool UpdateState(float deltaTime, Map& map);
 
@@ -28,6 +28,7 @@ private:
 
 	Vector2 pos;
 	float timer;
+	int range;
 	bool hasExploded;
 
 	float animationTimer = 0.0f;

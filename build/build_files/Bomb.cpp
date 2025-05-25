@@ -6,9 +6,10 @@ using namespace std;
 
 extern vector<Explosion> explosions;
 
-Bomb::Bomb(Vector2 pos)
+Bomb::Bomb(Vector2 pos, int bombRange)
 {
 	this->pos = pos;
+	this->range = bombRange;
 	timer = 2.0f;
 	hasExploded = false;
 
@@ -54,48 +55,46 @@ void Bomb::Explode(Map& map)
 
 	int centerX = pos.x / 40;
 	int centerY = pos.y / 40;
-
-	explosions.push_back(Explosion({ centerX * 40.0f, centerY * 40.0f }));
-
 	int range = 1; // + RangeModifier;
 
-	for (int dx = -1; dx <= 1; dx++)
-	{
-		if (dx == 0)
-		{
-			continue;
-		}
+	explosions.push_back(Explosion({ centerX * 40.0f, centerY * 40.0f }, ExplosionType::CENTER));
 
+	int dirs[4][4] = {{1, 0, ExplosionType::RIGHT, ExplosionType::MID_HORIZONTAL},
+					  {-1, 0, ExplosionType::LEFT, ExplosionType::MID_HORIZONTAL},
+					  {0, 1, ExplosionType::DOWN, ExplosionType::MID_VERTICAL},
+					  {0, -1, ExplosionType::UP, ExplosionType::MID_VERTICAL}};
+
+	for (int d = 0; d < 4; d++)
+	{
 		for (int i = 1; i <= range; i++)
 		{
-			int x = centerX + dx * i;
+			int x = centerX + dirs[d][0] * i;
+			int y = centerY + dirs[d][1] * i;
 
-			if (map.BreakTile(x, centerY))
+			int tileType = map.GetTileType(x, y);
+
+			if (tileType == 1)
 			{
 				break;
 			}
-
-			explosions.push_back(Explosion({ x * 40.0f, centerY * 40.0f }));
-		}
-	}
-
-	for (int dy = -1; dy <= 1; dy++)
-	{
-		if (dy == 0)
-		{
-			continue;
-		}
-
-		for (int i = 1; i <= range; i++)
-		{
-			int y = centerY + dy * i;
-
-			if (map.BreakTile(centerX, y))
+			
+			if (tileType == 2)
 			{
+				map.BreakTile(x, y);
 				break;
 			}
 
-			explosions.push_back(Explosion({ centerX * 40.0f, y * 40.0f }));
+			ExplosionType endType = (ExplosionType)dirs[d][2];
+			ExplosionType midType = (ExplosionType)dirs[d][3];
+
+			int nextX = centerX + dirs[d][0] * (i + 1);
+			int nextY = centerY + dirs[d][1] * (i + 1);
+			bool isLastPiece = (i == range) || (map.GetTileType(nextX, nextY) == 1);
+
+			ExplosionType currentType = isLastPiece ? endType : midType;
+			explosions.push_back(Explosion({ x * 40.0f, y * 40.0f }, currentType));
+
+			
 		}
 	}
 }
