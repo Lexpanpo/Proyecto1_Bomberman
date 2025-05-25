@@ -92,9 +92,12 @@ void SpawnEnemiesForLevel(int level, Map& map, vector<Enemy>& enemies) // Funció
                 }
             }
         } while (!validSpawn && attempts < 1000);   // Limite de intentos (Lo he puesto en 1000 pero se puede bajar)
+
+        EnemyType type = (GetRandomValue(1, 10) <= 7) ? EnemyType::BALLOM : EnemyType::DORIA;
+
         if (validSpawn) 
         { 
-            enemies.push_back(Enemy({ (float)gridX * 40.0f, (float)gridY * 40.0f }));
+            enemies.push_back(Enemy({ (float)gridX * 40.0f, (float)gridY * 40.0f }, type));
         }
         else 
         {
@@ -197,6 +200,7 @@ void Game::Run()
                 {
                     if (enemy.IsAlive() && CheckCollisionRecs(e.GetExplosionRect(), enemy.GetRect()))
                     {
+                        score += enemy.GetScoreValue();
                         enemy.Kill();
                     }
                 }
@@ -316,6 +320,8 @@ void Game::Run()
         }
         case GAMEPLAY:
         {
+            ClearBackground(GRAY);
+
             BeginMode2D(camera);
             map.DrawMap(walls);
             player.DrawPlayer(bomberman, bomba);
@@ -332,6 +338,9 @@ void Game::Run()
             EndMode2D();
 
             DrawText(TextFormat("Level: %d", currentLevel), 20, 20, 30, WHITE);
+
+            DrawText(TextFormat("Score: %06d", score), GetScreenWidth() / 2 - 100, 20, 30, WHITE);
+
             DrawText(TextFormat("Lives: %d", player.GetCurrentHp()), GetScreenWidth() - 150, 20, 30, WHITE);
 
             break;

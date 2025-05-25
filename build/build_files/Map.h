@@ -19,7 +19,7 @@ public:
 	
 	void DrawMap(Texture2D walls) const;
 
-	bool CheckCollisions(Rectangle& playerRect);
+	bool CheckCollisions(Rectangle& playerRect, bool ignoreSoftB = false);
 
 	bool BreakTile(int gridX, int gridY);
 

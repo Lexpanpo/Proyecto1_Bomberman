@@ -90,13 +90,25 @@ void Map::DrawMap(Texture2D walls) const
 	}
 }
 
-bool Map::CheckCollisions(Rectangle& playerRect)
+bool Map::CheckCollisions(Rectangle& playerRect, bool ignoreSoftB)
 {
 	for (int y = 0; y < 13; y++)
 	{
 		for (int x = 0; x < 31; x++)
 		{
-			if (grid[y][x] == 1 || grid[y][x] == 2 || grid[y][x] == 3)
+			int tileType = grid[y][x];
+			bool isSolid = false;
+
+			if (tileType == 1)
+			{
+				isSolid = true;
+			}
+			else if (!ignoreSoftB && (tileType == 2 || tileType == 3))
+			{
+				isSolid = true;
+			}
+
+			if (isSolid)
 			{
 				Rectangle tileRect = { x * 40, y * 40, 40, 40 };
 
@@ -104,7 +116,7 @@ bool Map::CheckCollisions(Rectangle& playerRect)
 				{
 					return true;
 				}
-			}			
+			}
 		}
 	}
 

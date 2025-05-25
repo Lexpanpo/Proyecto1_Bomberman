@@ -8,16 +8,24 @@
 
 using namespace std;
 
+enum EnemyType {
+    BALLOM,
+    DORIA
+};
+
 class Enemy
 {
 public:
-	Enemy(Vector2 startPos);
+	Enemy(Vector2 startPos, EnemyType type);
 
 	void Update(Map& map, float deltaTime, const vector<Bomb>& playerBombs);
 
 	void Draw()const;
 
 	Rectangle GetRect() const;
+
+    EnemyType GetType() const;
+    int GetScoreValue() const;
 
 	bool IsAlive() const;
 	void Kill();
@@ -27,18 +35,17 @@ private:
     Rectangle rect;
 
     float speed;
-
-    bool alive;
-
     int direction;
-
     float moveTimer;
 
+    bool alive;
    
     void Move(Map& map, float deltaTime, const vector<Bomb>& playerBombs);
     void ChangeDirection();
 
-    //bool CheckCollisionWithMap(Map& map, Vector2 nextPos);
+    EnemyType type;
+    int scoreValue;
 
+    //bool CheckCollisionWithMap(Map& map, Vector2 nextPos);
 };
 
