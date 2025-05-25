@@ -42,7 +42,7 @@ Game::Game()
 	camera.target = { 0, 0 };
 	camera.offset = { GetScreenWidth() / 2.0f, GetScreenHeight() / 2.0f };
 	camera.rotation = 0;
-	camera.zoom = 2;
+	camera.zoom = 1.5;
 }
 
 Game::~Game()
@@ -161,6 +161,7 @@ void Game::Run()
             }
 
             player.UpdatePlayer(map);
+            map.Update(deltaTime);
 
             for (Enemy& enemy : enemies)
             {
@@ -255,12 +256,12 @@ void Game::Run()
             }
 
             // Teclas de Debug
-            if (IsKeyReleased(KEY_P)) //    Hacer Daño al jugador
+            if (IsKeyReleased(KEY_P)) // P: Hacer Daño al jugador
             {
                 player.SetPlayerPos();
                 player.TakeDamage();
             }
-            if (IsKeyReleased(KEY_C)) //    Eliminar todos los SoftBlocks
+            if (IsKeyReleased(KEY_C)) // C: Eliminar todos los SoftBlocks
             {
                 map.ClearMap();
             }
