@@ -5,14 +5,36 @@
 Player::Player()
 {
     rect = { 45,45,32,32 };
-    //pos = { 45, 45 };		
+    //pos = { 45, 45 };
+    
+    state = P_ALIVE;
+    deathCurrentFrame = 0;
+    deathAnimTimer = 0.0f;
 }
 
-void Player::UpdatePlayer(Map& map, static Sound soundArray[])
+void Player::UpdatePlayer(Map& map, float deltaTime,static Sound soundArray[])
 {
+    if (state == P_DYING)
+    {
+        deathAnimTimer += deltaTime;
+
+        if (deathAnimTimer >= p_DeathFrameSpeed)
+        {
+            deathAnimTimer = 0.0f;
+            deathCurrentFrame++;            
+        }
+        if (deathCurrentFrame < 7)
+        {
+            sprite_status.y = 32;
+            sprite_status.x = deathCurrentFrame * 16;
+        }
+
+        return;
+    }
+
     Rectangle oldRect = rect;
     bool isMoving = false;
-    float deltaTime = GetFrameTime();
+    //float deltaTime = GetFrameTime();
 
     int wasLooking = mirando;
 
@@ -173,7 +195,14 @@ void Player::SetPlayerPos()
     rect.x = 45;
     rect.y = 45;
 
-    wasHit = false;
+    state = P_ALIVE;
+
+    currentFrame = 1;
+    timerAnimacion = 0.0f;
+
+    mirando = 0;
+    sprite_status.x = 0;
+    sprite_status.y = 0;
 }
 
 Rectangle Player::GetPlayerRect()
@@ -183,16 +212,32 @@ Rectangle Player::GetPlayerRect()
 
 void Player::TakeDamage()
 {
-    if (!wasHit)
+    if (state != P_ALIVE)
     {
-        wasHit = true;
-        playerHp--;
+        return;
     }
+
+    playerHp--;
+    state = P_DYING;
+
+    deathAnimTimer = 0.0f;
+    deathCurrentFrame = 0;
+    sprite_status = { 0, 32, 16, 16 };
 }
 
 int Player::GetCurrentHp() const
 {
     return playerHp;
+}
+
+PlayerState Player::GetState() const
+{
+    return state;
+}
+
+bool Player::DeathAnimationFinished() const
+{
+    return (state == P_DYING && deathCurrentFrame >= 7);
 }
 
 bool Player::victoryStatus()

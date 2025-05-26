@@ -9,27 +9,33 @@
 
 using namespace std;
 
+enum PlayerState {
+	P_ALIVE,
+	P_DYING
+};
+
 class Player
 {
 public:
 	Player();
 
-	void UpdatePlayer(Map& map, static Sound soundArray[]);
+	void UpdatePlayer(Map& map, float deltaTime ,static Sound soundArray[]);
 	void DrawPlayer(Texture2D bomberman, Texture2D bomba);
 
 	vector<Bomb> bombs;
 
 	Vector2 GetPlayerPos();
-
 	void SetPlayerPos();
-
 	Rectangle GetPlayerRect();
 
 	void TakeDamage();
-	bool wasHit = false;
 	int GetCurrentHp() const;
 
+	PlayerState GetState() const;
+	bool DeathAnimationFinished() const;
+
 	bool victoryStatus();
+
 private:
 	Rectangle rect;
 	Vector2 pos;
@@ -44,7 +50,11 @@ private:
 	float timerAnimacion = 0.0f;
 	const float frameSpeed = 0.10f; //	Cambiar esto para ajustar la velocidad de la animacion
 	int currentFrame = 1;
-
 	int maxBombs = 1;
+
+	PlayerState state = P_ALIVE;
+	float deathAnimTimer = 0.0f;
+	int deathCurrentFrame = 0;
+	float p_DeathFrameSpeed = 0.15f;
 };
 

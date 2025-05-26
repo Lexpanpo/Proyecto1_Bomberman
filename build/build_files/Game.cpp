@@ -20,20 +20,16 @@ Game::Game()
     InitWindow(1600, 900, "Bomberman - Eldiablo");
     SetTargetFPS(60);
 
-
     InitAudioDevice();
     music = LoadMusicStream("resources/bombermanAudio/music/StageTheme.wav");
     SetMusicVolume(music, 0.2f);
     PlayMusicStream(music);
-
-
 
     //if (IsKeyPressed(KEY_RIGHT))PlaySound(soundArray[0]);
     //if (IsKeyPressed(KEY_LEFT))PlaySound(soundArray[0]);
     //if (IsKeyPressed(KEY_DOWN))PlaySound(soundArray[1]);
     //if (IsKeyPressed(KEY_UP))PlaySound(soundArray[1]);
     //if (IsKeyPressed(KEY_SPACE))PlaySound(soundArray[2]);
-
 
     camera.target = { 0, 0 };
     camera.offset = { GetScreenWidth() / 2.0f, GetScreenHeight() / 2.0f };
@@ -45,7 +41,6 @@ Game::~Game()
 {
     CloseWindow();
 }
-
 
 void SpawnEnemiesForLevel(int level, Map& map, vector<Enemy>& enemies) // Función para generar enemigos según el nivel 
 {
@@ -95,7 +90,6 @@ void SpawnEnemiesForLevel(int level, Map& map, vector<Enemy>& enemies) // Funció
     }
 }
 
-
 void LoadLevel(int level, Player& player, Map& map, vector<Enemy>& enemies, bool& gameplayInitialized) // Función para cargar/reiniciar un nivel
 {
     cout << "CARGANDO NIVEL " << level << endl;
@@ -105,7 +99,6 @@ void LoadLevel(int level, Player& player, Map& map, vector<Enemy>& enemies, bool
     SpawnEnemiesForLevel(level, map, enemies);
     explosions.clear();
     gameplayInitialized = true;
-    player.wasHit = false;
 }
 
 void Game::Run()
@@ -118,7 +111,8 @@ void Game::Run()
 
     int currentLevel = 1;
 
-    enum GameState { SPLASH, TITLE, GAMEPLAY, WIN, DEATH };
+    enum GameState { SPLASH, TITLE, GAMEPLAY, DEATH_PAUSE, WIN, DEATH };
+    float deathPauseCounter = 0.0f;
     GameState currentState = SPLASH;
 
     Texture2D titleScreen = LoadTexture("resources/bombermanSprites/UI/NES - Bomberman - Title Screen & Text.png");
@@ -170,7 +164,10 @@ void Game::Run()
                 LoadLevel(currentLevel, player, map, enemies, isPlaying);
             }
 
-            player.UpdatePlayer(map, soundArray);
+            player.UpdatePlayer(map, deltaTime,soundArray);
+            bool playerHitByExplosion = false;
+            bool playerHitByEnemy = false;
+
             map.Update(deltaTime);
 
             for (Enemy& enemy : enemies)
@@ -195,13 +192,14 @@ void Game::Run()
 
             bool playerWasHit = false;
 
-
             for (const Explosion& e : explosions)   // Colisiones con las eplosiones
             {
-                if (!playerWasHit && CheckCollisionRecs(player.GetPlayerRect(), e.GetExplosionRect()))
+                if (player.GetState() == P_ALIVE && !playerWasHit && CheckCollisionRecs(player.GetPlayerRect(), e.GetExplosionRect()))
                 {
                     player.TakeDamage();
+                    playerHitByExplosion = true;
                     playerWasHit = true;
+                    //if (player.GetState() == P_DYING) break;
                 }
                 for (Enemy& enemy : enemies)
                 {
@@ -213,16 +211,38 @@ void Game::Run()
                 }
             }
             
-            for (const Enemy& enemy : enemies)  //Colisiones del jugador y los enemigos
+            if (player.GetState() == P_ALIVE && !playerWasHit) //Colisiones del jugador y los enemigos
             {
-                if (!playerWasHit && enemy.GetState() == EnemyState::ALIVE && CheckCollisionRecs(player.GetPlayerRect(), enemy.GetRect()))
+                for (const Enemy& enemy : enemies)  
                 {
-                    player.TakeDamage();
-                    playerWasHit = true;
-                    break;
+                    if (enemy.GetState() == EnemyState::ALIVE && CheckCollisionRecs(player.GetPlayerRect(), enemy.GetRect()))
+                    {
+                        player.TakeDamage();
+                        playerHitByEnemy = true;
+                        playerWasHit = true;
+                        //if (player.GetState() == P_DYING) break;
+                        break;
+                    }
                 }
             }
 
+            if (player.GetState() == P_DYING && player.DeathAnimationFinished())
+            {
+                currentState = DEATH_PAUSE;
+                deathPauseCounter = 1.0f;
+
+                /*if (player.GetCurrentHp() > 0)
+                {
+                    isPlaying = false;
+                    currentState = GAMEPLAY;
+                }
+                else
+                {
+                    currentState = DEATH;
+                    isPlaying = false;
+                }*/                
+            }
+            
             enemies.erase(remove_if(enemies.begin(), enemies.end(),
                 [](const Enemy& e) { return !e.IsAlive(); }),
                 enemies.end());
@@ -249,7 +269,7 @@ void Game::Run()
                 }
             }
 
-            if (player.GetCurrentHp() <= 0)
+            /*if (player.GetCurrentHp() <= 0)
             {
                 currentState = DEATH;
                 isPlaying = false;
@@ -263,7 +283,7 @@ void Game::Run()
                 player.wasHit = false;
                 //enemies.clear();
                 //isPlaying = false;
-            }
+            }*/
 
             // Teclas de Debug
             if (IsKeyReleased(KEY_P)) // P: Hacer Daño al jugador
@@ -274,6 +294,13 @@ void Game::Run()
             if (IsKeyReleased(KEY_C)) // C: Eliminar todos los SoftBlocks
             {
                 map.ClearMap();
+            }
+            if (IsKeyReleased(KEY_K)) // K: Matar a todos los enemigos
+            {
+                for (Enemy& enemy : enemies)
+                {                   
+                    enemy.Kill();
+                }
             }
 
             // Condición de Victoria
@@ -295,6 +322,28 @@ void Game::Run()
             if (camera.target.y > mapHeight - halfHeight) camera.target.y = mapHeight - halfHeight;
 
         gameplay_end:;
+            break;
+        }
+        case DEATH_PAUSE:
+        {
+            //UpdateMusicStream(music)
+
+            deathPauseCounter -= deltaTime;
+
+            if (deathPauseCounter <= 0)
+            {
+               if (player.GetCurrentHp() > 0)
+               {
+                   isPlaying = false;
+                   currentState = GAMEPLAY;
+               }
+               else
+               {
+                   currentState = DEATH;
+                   isPlaying = false;
+               }
+            }
+
             break;
         }
         case WIN:
@@ -325,6 +374,49 @@ void Game::Run()
             break;
         }
         case GAMEPLAY:
+        {
+            ClearBackground(GRAY);
+
+            BeginMode2D(camera);
+            map.DrawMap(walls);
+            player.DrawPlayer(bomberman, bomba);
+
+            // Dibujar Enemigos
+            for (const Enemy& enemy : enemies)
+            {
+                Texture2D currentTexture;
+
+                switch (enemy.GetType())
+                {
+                case BALLOM:
+                    currentTexture = ballomSprites;
+                    break;
+
+                case DORIA:
+                    currentTexture = doriaSprites;
+                    break;
+                }
+
+                enemy.Draw(currentTexture);
+            }
+
+            // Dibujar Explosiones
+            for (const Explosion& e : explosions)
+            {
+                e.DrawExplosion(explosiones);
+            }
+
+            EndMode2D();
+
+            DrawText(TextFormat("Level: %d", currentLevel), 20, 20, 30, WHITE);
+
+            DrawText(TextFormat("Score: %06d", score), GetScreenWidth() / 2 - 100, 20, 30, WHITE);
+
+            DrawText(TextFormat("Lives: %d", player.GetCurrentHp()), GetScreenWidth() - 150, 20, 30, WHITE);
+
+            break;
+        }
+        case DEATH_PAUSE:
         {
             ClearBackground(GRAY);
 
