@@ -12,12 +12,12 @@ Player::Player()
     deathAnimTimer = 0.0f;
 }
 
-void Player::UpdatePlayer(Map& map, float deltaTime,static Sound soundArray[])
+void Player::UpdatePlayer(Map& map, float deltaTime,static Sound soundArray[], Music musicArray[])
 {
     if (state == P_DYING)
     {
+        PlaySound(soundArray[4]);
         deathAnimTimer += deltaTime;
-
         if (deathAnimTimer >= p_DeathFrameSpeed)
         {
             deathAnimTimer = 0.0f;
@@ -28,7 +28,6 @@ void Player::UpdatePlayer(Map& map, float deltaTime,static Sound soundArray[])
             sprite_status.y = 32;
             sprite_status.x = deathCurrentFrame * 16;
         }
-
         return;
     }
 
@@ -66,6 +65,10 @@ void Player::UpdatePlayer(Map& map, float deltaTime,static Sound soundArray[])
         mirando = 3; // Arriba
         isMoving = true;
         PlaySound(soundArray[1]);
+    }
+    if (IsKeyDown(KEY_SPACE))
+    {
+        PlaySound(soundArray[2]);
     }
 
     // Colisiones

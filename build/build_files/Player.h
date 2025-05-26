@@ -19,7 +19,7 @@ class Player
 public:
 	Player();
 
-	void UpdatePlayer(Map& map, float deltaTime ,static Sound soundArray[]);
+	void UpdatePlayer(Map& map, float deltaTime ,static Sound soundArray[], Music musicArray[]);
 	void DrawPlayer(Texture2D bomberman, Texture2D bomba);
 
 	vector<Bomb> bombs;

@@ -20,17 +20,6 @@ Game::Game()
     InitWindow(1600, 900, "Bomberman - Eldiablo");
     SetTargetFPS(60);
 
-    InitAudioDevice();
-    music = LoadMusicStream("resources/bombermanAudio/music/StageTheme.wav");
-    SetMusicVolume(music, 0.2f);
-    PlayMusicStream(music);
-
-    //if (IsKeyPressed(KEY_RIGHT))PlaySound(soundArray[0]);
-    //if (IsKeyPressed(KEY_LEFT))PlaySound(soundArray[0]);
-    //if (IsKeyPressed(KEY_DOWN))PlaySound(soundArray[1]);
-    //if (IsKeyPressed(KEY_UP))PlaySound(soundArray[1]);
-    //if (IsKeyPressed(KEY_SPACE))PlaySound(soundArray[2]);
-
     camera.target = { 0, 0 };
     camera.offset = { GetScreenWidth() / 2.0f, GetScreenHeight() / 2.0f };
     camera.rotation = 0;
@@ -122,18 +111,37 @@ void Game::Run()
     Texture2D explosiones = LoadTexture("resources/bombermanSprites/General Sprites/Explosion_Sprites_v2.png");
     Texture2D walls = LoadTexture("resources/bombermanSprites/General Sprites/Walls_Sprites.png");
 
+
+    InitAudioDevice();
     static Sound soundArray[7];
 
-    soundArray[0] = LoadSound("resources/bombermanAudio/SFX/Bomberman SFX (1).wav");
-    soundArray[1] = LoadSound("resources/bombermanAudio/SFX/Bomberman SFX (2).wav");
-    soundArray[2] = LoadSound("resources/bombermanAudio/SFX/Bomberman SFX (3).wav");
-    soundArray[3] = LoadSound("resources/bombermanAudio/SFX/Bomberman SFX (4).wav");
-    soundArray[4] = LoadSound("resources/bombermanAudio/SFX/Bomberman SFX (5).wav");
-    soundArray[5] = LoadSound("resources/bombermanAudio/SFX/Bomberman SFX (6).wav");
-    soundArray[6] = LoadSound("resources/bombermanAudio/SFX/Bomberman II SFX (19).wav");
+    soundArray[0] = LoadSound("resources/bombermanAudio/SFX/Bomberman SFX (1).wav"); //walk
+    soundArray[1] = LoadSound("resources/bombermanAudio/SFX/Bomberman SFX (2).wav"); //walk
+    soundArray[2] = LoadSound("resources/bombermanAudio/SFX/Bomberman SFX (3).wav"); //place bomb
+    soundArray[3] = LoadSound("resources/bombermanAudio/SFX/Bomberman SFX (4).wav"); //poweup
+    soundArray[4] = LoadSound("resources/bombermanAudio/SFX/Bomberman SFX (5).wav");//player dies
+    soundArray[5] = LoadSound("resources/bombermanAudio/SFX/Bomberman SFX (6).wav"); //defeat enemies
+    soundArray[6] = LoadSound("resources/bombermanAudio/SFX/Bomberman II SFX (19).wav"); //explosion
 
+    static Music musicArray[9];
+
+    musicArray[0] = LoadMusicStream("resources/bombermanAudio/music/StageTheme.wav"); //stage
+    musicArray[1] = LoadMusicStream("resources/bombermanAudio/music/Bomberman (NES) Music - Level Complete.wav"); //level complete
+    musicArray[2] = LoadMusicStream("resources/bombermanAudio/music/Bomberman (NES) Music - Level Start.wav"); //level start
+    musicArray[3] = LoadMusicStream("resources/bombermanAudio/music/Bomberman-_NES_-Music-Find-The-Door.wav"); //find the door
+    musicArray[4] = LoadMusicStream("resources/bombermanAudio/music/Bomberman-_NES_-Music-Game-Over.wav"); //game over
+    musicArray[5] = LoadMusicStream("resources/bombermanAudio/music/Bomberman-_NES_-Music-Title-Screen-_dE0azz5nJeg_.wav"); //titlescreen
+    musicArray[6] = LoadMusicStream("resources/bombermanAudio/music/Bomberman (NES) Music - Just Died.wav"); //just died
+    musicArray[7] = LoadMusicStream("resources/bombermanAudio/music/Bomberman-_NES_-Music-Invincibility-Theme.wav"); //invisivility
+    musicArray[8] = LoadMusicStream("resources/bombermanAudio/music/Bomberman-_NES_-Music-Ending-Theme-_m7DR-tiNWC8_.wav"); //win ending
+
+ 
     for (int i = 0; i < 6; i++) {
         SetSoundVolume(soundArray[i], 0.2f);
+    } 
+
+    for (int i = 0; i < 6; i++) {
+        SetMusicVolume(musicArray[i], 0.2f);
     }
 
     Texture2D ballomSprites = LoadTexture("resources/bombermanSprites/General Sprites/Ballom_Sprites.png");
@@ -142,29 +150,43 @@ void Game::Run()
 
     while (!WindowShouldClose())
     {
-        UpdateMusicStream(music);
+        UpdateMusicStream(musicArray[0]);
+        UpdateMusicStream(musicArray[1]);
+        UpdateMusicStream(musicArray[2]);
+        UpdateMusicStream(musicArray[3]);
+        UpdateMusicStream(musicArray[4]);
+        UpdateMusicStream(musicArray[5]);
+        UpdateMusicStream(musicArray[6]);
+        UpdateMusicStream(musicArray[7]);
+        UpdateMusicStream(musicArray[8]);
+
         float deltaTime = GetFrameTime();
 
         switch (currentState)
         {
         case SPLASH:
         {
+            PlayMusicStream(musicArray[5]);
             if (IsKeyPressed(KEY_ENTER)) currentState = TITLE;
             break;
         }
         case TITLE:
         {
+            musicArray[2].looping = false;
+            PlayMusicStream(musicArray[2]);
+            PlayMusicStream(musicArray[0]);
             if (IsKeyPressed(KEY_ENTER)) currentState = GAMEPLAY;
             break;
         }
         case GAMEPLAY:
         {
+            PauseMusicStream(musicArray[5]);
             if (!isPlaying)
             {
                 LoadLevel(currentLevel, player, map, enemies, isPlaying);
             }
 
-            player.UpdatePlayer(map, deltaTime,soundArray);
+            player.UpdatePlayer(map, deltaTime,soundArray, musicArray);
             bool playerHitByExplosion = false;
             bool playerHitByEnemy = false;
 
@@ -196,6 +218,7 @@ void Game::Run()
             {
                 if (player.GetState() == P_ALIVE && !playerWasHit && CheckCollisionRecs(player.GetPlayerRect(), e.GetExplosionRect()))
                 {
+                    
                     player.TakeDamage();
                     playerHitByExplosion = true;
                     playerWasHit = true;
@@ -217,6 +240,7 @@ void Game::Run()
                 {
                     if (enemy.GetState() == EnemyState::ALIVE && CheckCollisionRecs(player.GetPlayerRect(), enemy.GetRect()))
                     {
+                    
                         player.TakeDamage();
                         playerHitByEnemy = true;
                         playerWasHit = true;
@@ -257,9 +281,15 @@ void Game::Run()
 
                 if (CheckCollisionRecs(player.GetPlayerRect(), doorRect) && IsKeyPressed(KEY_ENTER)) {
                     currentLevel++;
+
+                    musicArray[1].looping = false;
+                    PlayMusicStream(musicArray[1]);
+
                     if (currentLevel > 4)
                     {
+                        PlayMusicStream(musicArray[8]);
                         currentState = WIN;
+                      
                     }
                     else
                     {
@@ -326,8 +356,6 @@ void Game::Run()
         }
         case DEATH_PAUSE:
         {
-            //UpdateMusicStream(music)
-
             deathPauseCounter -= deltaTime;
 
             if (deathPauseCounter <= 0)
@@ -339,6 +367,9 @@ void Game::Run()
                }
                else
                {
+                   musicArray[6].looping = false;
+                   PlayMusicStream(musicArray[6]);
+                   PlayMusicStream(musicArray[4]);
                    currentState = DEATH;
                    isPlaying = false;
                }
@@ -347,9 +378,12 @@ void Game::Run()
             break;
         }
         case WIN:
+            PauseMusicStream(musicArray[0]);
+            PlayMusicStream(musicArray[1]);
             if (IsKeyPressed(KEY_ENTER)) CloseWindow();
             break;
         case DEATH:
+            PauseMusicStream(musicArray[0]);
             if (IsKeyPressed(KEY_ENTER)) CloseWindow();
             break;
         }
@@ -362,6 +396,7 @@ void Game::Run()
         {
         case SPLASH:
         {
+            
             DrawText("This is a recreation of Bomberman NES. Press ENTER to continue.", 100, 350, 40, WHITE);
             DrawText("Proyecto I, Disseny i desenvolupament de videojocs, CITM Terrassa.", 200, 450, 30, WHITE);
             DrawText("Pol Cuenca, Andrea Velez, Daniel Castillero. Tutor: Alejandro Paris Gomez ", 200, 500, 30, WHITE);
@@ -461,6 +496,7 @@ void Game::Run()
         }
         case WIN:
         {
+            PlayMusicStream(musicArray[8]);
             DrawTextureEx(WinScreen, { 300, 0 }, 0, 1.5, WHITE);
             DrawText("Presiona ENTER para salir", 650, 700, 25, WHITE);
             break;
@@ -485,8 +521,8 @@ void Game::Run()
     UnloadTexture(ballomSprites);
     UnloadTexture(doriaSprites);
 
-    UnloadMusicStream(music);
     for (int i = 0; i < 6; i++) UnloadSound(soundArray[i]);
+    for (int i = 0; i < 8; i++) UpdateMusicStream(musicArray[i]);
 
     CloseAudioDevice();
     CloseWindow();

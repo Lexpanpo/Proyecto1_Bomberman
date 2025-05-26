@@ -12,7 +12,6 @@ public:
 
 private:
 	Camera2D camera;
-	Music music;
 
 	int score = 0;
 };
