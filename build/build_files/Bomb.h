@@ -14,7 +14,7 @@ extern vector<Explosion> explosions;
 class Bomb
 {
 public:
-	Bomb(Vector2 pos, int range = 2); // Rango 2 por defecto, cambiar luego si añadimos el modificador
+	Bomb(Vector2 pos, int bombRange);
 
 	bool UpdateState(float deltaTime, Map& map, static Sound soundArray[]);
 

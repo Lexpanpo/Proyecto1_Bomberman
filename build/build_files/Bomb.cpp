@@ -56,7 +56,7 @@ void Bomb::Explode(Map& map)
 
 	int centerX = pos.x / 40;
 	int centerY = pos.y / 40;
-	int range = 1; // + RangeModifier;
+	//int range = 1;
 
 	explosions.push_back(Explosion({ centerX * 40.0f, centerY * 40.0f }, ExplosionType::CENTER));
 
@@ -67,7 +67,7 @@ void Bomb::Explode(Map& map)
 
 	for (int d = 0; d < 4; d++)
 	{
-		for (int i = 1; i <= range; i++)
+		for (int i = 1; i <= this->range; i++)
 		{
 			int x = centerX + dirs[d][0] * i;
 			int y = centerY + dirs[d][1] * i;
@@ -90,12 +90,10 @@ void Bomb::Explode(Map& map)
 
 			int nextX = centerX + dirs[d][0] * (i + 1);
 			int nextY = centerY + dirs[d][1] * (i + 1);
-			bool isLastPiece = (i == range) || (map.GetTileType(nextX, nextY) == 1);
+			bool isLastPiece = (i == this->range) || (map.GetTileType(nextX, nextY) == 1);
 
 			ExplosionType currentType = isLastPiece ? endType : midType;
-			explosions.push_back(Explosion({ x * 40.0f, y * 40.0f }, currentType));
-
-			
+			explosions.push_back(Explosion({ x * 40.0f, y * 40.0f }, currentType));			
 		}
 	}
 }

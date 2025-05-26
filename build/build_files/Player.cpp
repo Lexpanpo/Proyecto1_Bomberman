@@ -1,6 +1,7 @@
 #include "Player.h"
 
 #include "raylib.h"
+#include <iostream>
 
 Player::Player()
 {
@@ -145,7 +146,7 @@ void Player::UpdatePlayer(Map& map, float deltaTime,static Sound soundArray[])
         int gridY = (int)((rect.y + rect.height / 2) / 40.0f);
         Vector2 bombPos = { (float)gridX * 40.0f, (float)gridY * 40.0f };
 
-        bombs.push_back(Bomb(bombPos));
+        bombs.push_back(Bomb(bombPos, bombRange));
     }
 
     for (int i = 0; i < bombs.size();)
@@ -168,8 +169,6 @@ void Player::UpdatePlayer(Map& map, float deltaTime,static Sound soundArray[])
         }
     }
 }
-
-
 
 void Player::DrawPlayer(Texture2D bomberman, Texture2D bomba)
 {
@@ -228,6 +227,40 @@ void Player::TakeDamage()
 int Player::GetCurrentHp() const
 {
     return playerHp;
+}
+
+int Player::GetBombRange() const
+{
+    return bombRange;
+}
+
+bool Player :: HasFlamePass() const
+{
+    return hasFlamePass;
+}
+
+void Player::PickPowerUp(PowerUpType type)
+{
+    switch (type)
+    {
+    case BOMBS_UP:
+        maxBombs++;
+        if (maxBombs > 5) maxBombs = 5;
+        break;
+    case FLAMES_UP:
+        bombRange++;
+        if (bombRange > 6) bombRange = 6;
+        break;
+    case SPEED_UP:
+        playerSpeed += 0.5f;
+        if (playerSpeed > 4.0f) playerSpeed = 4.0f;
+        break;
+    case FLAME_PASS:
+        hasFlamePass = true;
+        break;
+    default:
+        break;
+    }
 }
 
 PlayerState Player::GetState() const

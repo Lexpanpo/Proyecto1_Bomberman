@@ -142,23 +142,31 @@ bool Map::BreakTile(int gridX, int gridY)
 
 	if (grid[gridY][gridX] == 2)
 	{
-		bool spawnDoor = !doorSpawned && GetRandomValue(1, 5) == 1;
+		bool spawnedSomething= false;
 
-		if (spawnDoor)
+		if (!doorSpawned && GetRandomValue(0, 99) < (doorSpawnChance * 100))
 		{
 			grid[gridY][gridX] = 0;
 
 			doorPos = { gridX * 40.0f, gridY * 40.0f };
 			doorSpawned = true;
+
+			spawnedSomething = true;
 		}
-		else
+		if (!spawnedSomething && powerUpsSpawned < maxPowerUps && GetRandomValue(0, 99) < (powerUpsSpawnChance * 100))
 		{
-			grid[gridY][gridX] = 3;
-			animatingBlocks.push_back({ (float)gridX, (float)gridY });
+			PowerUp newPowerUp;
+			newPowerUp.type = (PowerUpType)GetRandomValue(0, 3);
+			newPowerUp.rect = { gridX * 40.0f, gridY * 40.0f, 40.0f, 40.0f };
+			newPowerUp.active = true;
+			activePowerUps.push_back(newPowerUp);
+			powerUpsSpawned++;
 		}
+
+		grid[gridY][gridX] = 3;
+		animatingBlocks.push_back({ (float)gridX, (float)gridY });
 		return true;
 	}
-
 	return false;
 }
 
@@ -202,6 +210,31 @@ int Map::GetTileType(int gridX, int gridY) const
 	}
 
 	return grid[gridY][gridX];
+}
+
+void Map::DrawPowerUps(Texture2D powerUpTexture) const
+{
+	for (const PowerUp& p : activePowerUps)
+	{
+		if (p.active)
+		{
+			Rectangle sourceRec = { p.type * 16, 0, 16, 16 };
+			DrawTexturePro(powerUpTexture, sourceRec, p.rect, { 0,0 }, 0, WHITE);
+		}
+	}
+}
+
+vector<PowerUp>& Map::GetPowerUps()
+{
+	return activePowerUps;
+}
+
+void Map::RemovePowerUpAt(int index)
+{
+	if (index >= 0 && index < activePowerUps.size())
+	{
+		activePowerUps.erase(activePowerUps.begin() + index);
+	}
 }
 
 bool Map::IsDoorSpawned()
@@ -271,6 +304,10 @@ void Map::ResetLevel()
 {
 	doorSpawned = false;
 	doorPos = { -1, -1 };
+
+	activePowerUps.clear();
+	powerUpsSpawned = 0;
+	animatingBlocks.clear();
 
 	for (int y = 0; y < 13; y++)
 	{

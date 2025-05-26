@@ -127,6 +127,7 @@ void Game::Run()
     Texture2D bomba = LoadTexture("resources/bombermanSprites/General Sprites/Bomb_Sprites.png");
     Texture2D explosiones = LoadTexture("resources/bombermanSprites/General Sprites/Explosion_Sprites_v2.png");
     Texture2D walls = LoadTexture("resources/bombermanSprites/General Sprites/Walls_Sprites.png");
+    Texture2D powerUps = LoadTexture("resources/bombermanSprites/General Sprites/PowerUps_Sprites_v2.png");
 
     static Sound soundArray[7];
 
@@ -209,6 +210,18 @@ void Game::Run()
 
             map.Update(deltaTime);
 
+            vector<PowerUp>& powerUps = map.GetPowerUps();
+
+            for (int i = powerUps.size() - 1; i >= 0; i--)
+            {
+                if (powerUps[i].active && CheckCollisionRecs(player.GetPlayerRect(), powerUps[i].rect)) 
+                {
+                    player.PickPowerUp(powerUps[i].type);
+                    //Sonido de cuando pillas un powerup
+                    map.RemovePowerUpAt(i);
+                }
+            }
+
             for (Enemy& enemy : enemies)
             {
                 if (enemy.IsAlive())
@@ -233,7 +246,7 @@ void Game::Run()
 
             for (const Explosion& e : explosions)   // Colisiones con las eplosiones
             {
-                if (player.GetState() == P_ALIVE && !playerWasHit && CheckCollisionRecs(player.GetPlayerRect(), e.GetExplosionRect()))
+                if (!player.HasFlamePass() && player.GetState() == P_ALIVE && !playerWasHit && CheckCollisionRecs(player.GetPlayerRect(), e.GetExplosionRect()))
                 {
                     player.TakeDamage();
                     playerHitByExplosion = true;
@@ -428,6 +441,7 @@ void Game::Run()
 
             BeginMode2D(camera);
             map.DrawMap(walls);
+            map.DrawPowerUps(powerUps);
             player.DrawPlayer(bomberman, bomba);
 
             // Dibujar Enemigos
@@ -535,6 +549,7 @@ void Game::Run()
     UnloadTexture(walls);
     UnloadTexture(ballomSprites);
     UnloadTexture(doriaSprites);
+    UnloadTexture(powerUps);
 
     UnloadMusicStream(music);
     for (int i = 0; i < 6; i++) UnloadSound(soundArray[i]);
