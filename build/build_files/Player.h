@@ -2,6 +2,7 @@
 
 #include "Map.h"
 #include "Bomb.h"
+#include "PowerUps.h"
 
 #include <iostream>
 #include <vector>
@@ -31,6 +32,10 @@ public:
 	void TakeDamage();
 	int GetCurrentHp() const;
 
+	void PickPowerUp(PowerUpType type);
+	int GetBombRange() const;
+	bool HasFlamePass() const;
+
 	PlayerState GetState() const;
 	bool DeathAnimationFinished() const;
 
@@ -39,7 +44,7 @@ public:
 private:
 	Rectangle rect;
 	Vector2 pos;
-	const float playerSpeed = 2.0f;
+	float playerSpeed = 2.0f;
 
 	int playerHp = 3;
 
@@ -51,6 +56,9 @@ private:
 	const float frameSpeed = 0.10f; //	Cambiar esto para ajustar la velocidad de la animacion
 	int currentFrame = 1;
 	int maxBombs = 1;
+
+	int bombRange = 1;
+	bool hasFlamePass = false;
 
 	PlayerState state = P_ALIVE;
 	float deathAnimTimer = 0.0f;

@@ -79,7 +79,7 @@ void SpawnEnemiesForLevel(int level, Map& map, vector<Enemy>& enemies) // Funció
     }
 }
 
-void LoadLevel(int level, Player& player, Map& map, vector<Enemy>& enemies, bool& gameplayInitialized) // Función para cargar/reiniciar un nivel
+void LoadLevel(int level, Player& player, Map& map, vector<Enemy>& enemies, bool& gameplayInitialized, float& timer, bool& pointsFlag) // Función para cargar/reiniciar un nivel
 {
     cout << "CARGANDO NIVEL " << level << endl;
     player.SetPlayerPos();
@@ -88,6 +88,8 @@ void LoadLevel(int level, Player& player, Map& map, vector<Enemy>& enemies, bool
     SpawnEnemiesForLevel(level, map, enemies);
     explosions.clear();
     gameplayInitialized = true;
+    timer = 200.0f;
+    pointsFlag = true;
 }
 
 void Game::Run()
@@ -100,7 +102,11 @@ void Game::Run()
 
     int currentLevel = 1;
 
-    enum GameState { SPLASH, TITLE, GAMEPLAY, DEATH_PAUSE, WIN, DEATH };
+    float levelTimer = 200.0f;
+    bool canEarnPoints = true;
+
+    enum GameState { SPLASH, TITLE, LEVEL_START,GAMEPLAY, DEATH_PAUSE, WIN, DEATH };
+    float levelStartCounter = 0.0f;
     float deathPauseCounter = 0.0f;
     GameState currentState = SPLASH;
 
@@ -110,6 +116,7 @@ void Game::Run()
     Texture2D bomba = LoadTexture("resources/bombermanSprites/General Sprites/Bomb_Sprites.png");
     Texture2D explosiones = LoadTexture("resources/bombermanSprites/General Sprites/Explosion_Sprites_v2.png");
     Texture2D walls = LoadTexture("resources/bombermanSprites/General Sprites/Walls_Sprites.png");
+    Texture2D powerUps = LoadTexture("resources/bombermanSprites/General Sprites/PowerUps_Sprites_v2.png");
 
 
     InitAudioDevice();
@@ -176,6 +183,26 @@ void Game::Run()
             PlayMusicStream(musicArray[2]);
             PlayMusicStream(musicArray[0]);
             if (IsKeyPressed(KEY_ENTER)) currentState = GAMEPLAY;
+            if (IsKeyPressed(KEY_ENTER))
+            {
+                currentState = LEVEL_START;
+                levelStartCounter = 2.0f;
+                isPlaying = false;
+            }
+            break;
+        }
+        case LEVEL_START:
+        {
+            //UpdateMusicStream(music);
+
+            levelStartCounter -= deltaTime;
+
+            if (levelStartCounter <= 0)
+            {
+                currentState = GAMEPLAY;
+                isPlaying = false;
+            }
+            
             break;
         }
         case GAMEPLAY:
@@ -183,7 +210,21 @@ void Game::Run()
             PauseMusicStream(musicArray[5]);
             if (!isPlaying)
             {
-                LoadLevel(currentLevel, player, map, enemies, isPlaying);
+                LoadLevel(currentLevel, player, map, enemies, isPlaying, levelTimer, canEarnPoints);
+            }
+
+            if (levelTimer > 0 && player.GetState() == P_ALIVE)
+            {
+                levelTimer -= deltaTime;
+
+                if (levelTimer <= 0)
+                {
+                    levelTimer = 0;
+                    if (canEarnPoints)
+                    {
+                        canEarnPoints = false;
+                    }
+                }
             }
 
             player.UpdatePlayer(map, deltaTime,soundArray, musicArray);
@@ -191,6 +232,18 @@ void Game::Run()
             bool playerHitByEnemy = false;
 
             map.Update(deltaTime);
+
+            vector<PowerUp>& powerUps = map.GetPowerUps();
+
+            for (int i = powerUps.size() - 1; i >= 0; i--)
+            {
+                if (powerUps[i].active && CheckCollisionRecs(player.GetPlayerRect(), powerUps[i].rect)) 
+                {
+                    player.PickPowerUp(powerUps[i].type);
+                    //Sonido de cuando pillas un powerup
+                    map.RemovePowerUpAt(i);
+                }
+            }
 
             for (Enemy& enemy : enemies)
             {
@@ -216,7 +269,7 @@ void Game::Run()
 
             for (const Explosion& e : explosions)   // Colisiones con las eplosiones
             {
-                if (player.GetState() == P_ALIVE && !playerWasHit && CheckCollisionRecs(player.GetPlayerRect(), e.GetExplosionRect()))
+                if (!player.HasFlamePass() && player.GetState() == P_ALIVE && !playerWasHit && CheckCollisionRecs(player.GetPlayerRect(), e.GetExplosionRect()))
                 {
                     
                     player.TakeDamage();
@@ -226,9 +279,12 @@ void Game::Run()
                 }
                 for (Enemy& enemy : enemies)
                 {
-                    if (enemy.IsAlive() && CheckCollisionRecs(e.GetExplosionRect(), enemy.GetRect()))
+                    if (enemy.GetState() == EnemyState::ALIVE && CheckCollisionRecs(e.GetExplosionRect(), enemy.GetRect()))
                     {
-                        score += enemy.GetScoreValue();
+                        if (canEarnPoints)
+                        {
+                            score += enemy.GetScoreValue();
+                        }
                         enemy.Kill();
                     }
                 }
@@ -293,9 +349,10 @@ void Game::Run()
                     }
                     else
                     {
+                        currentState = LEVEL_START;
+                        levelStartCounter = 2.0f;
                         isPlaying = false;
                     }
-                    goto gameplay_end;
                 }
             }
 
@@ -351,7 +408,6 @@ void Game::Run()
             if (camera.target.x > mapWidth - halfWidth) camera.target.x = mapWidth - halfWidth;
             if (camera.target.y > mapHeight - halfHeight) camera.target.y = mapHeight - halfHeight;
 
-        gameplay_end:;
             break;
         }
         case DEATH_PAUSE:
@@ -362,8 +418,9 @@ void Game::Run()
             {
                if (player.GetCurrentHp() > 0)
                {
+                   currentState = LEVEL_START;
+                   levelStartCounter = 2.0f;
                    isPlaying = false;
-                   currentState = GAMEPLAY;
                }
                else
                {
@@ -408,12 +465,19 @@ void Game::Run()
             DrawText("Presiona ENTER para comenzar", 500, 850, 25, WHITE);
             break;
         }
+        case LEVEL_START:
+        {
+            ClearBackground(BLACK);
+            DrawText(TextFormat("Level: %d", currentLevel), GetScreenWidth() / 2 - 100, GetScreenHeight() / 2, 30, WHITE);
+            break;
+        }
         case GAMEPLAY:
         {
             ClearBackground(GRAY);
 
             BeginMode2D(camera);
             map.DrawMap(walls);
+            map.DrawPowerUps(powerUps);
             player.DrawPlayer(bomberman, bomba);
 
             // Dibujar Enemigos
@@ -443,7 +507,8 @@ void Game::Run()
 
             EndMode2D();
 
-            DrawText(TextFormat("Level: %d", currentLevel), 20, 20, 30, WHITE);
+           // DrawText(TextFormat("Level: %d", currentLevel), 20, 20, 30, WHITE);
+           DrawText(TextFormat("Time: %03d", (int)levelTimer), 20, 20, 30, WHITE);
 
             DrawText(TextFormat("Score: %06d", score), GetScreenWidth() / 2 - 100, 20, 30, WHITE);
 
@@ -486,7 +551,8 @@ void Game::Run()
 
             EndMode2D();
 
-            DrawText(TextFormat("Level: %d", currentLevel), 20, 20, 30, WHITE);
+            //DrawText(TextFormat("Level: %d", currentLevel), 20, 20, 30, WHITE);
+            DrawText(TextFormat("Time: %03d", (int)levelTimer), 20, 20, 30, WHITE);
 
             DrawText(TextFormat("Score: %06d", score), GetScreenWidth() / 2 - 100, 20, 30, WHITE);
 
@@ -520,6 +586,7 @@ void Game::Run()
     UnloadTexture(walls);
     UnloadTexture(ballomSprites);
     UnloadTexture(doriaSprites);
+    UnloadTexture(powerUps);
 
     for (int i = 0; i < 6; i++) UnloadSound(soundArray[i]);
     for (int i = 0; i < 8; i++) UpdateMusicStream(musicArray[i]);
