@@ -111,7 +111,8 @@ void Game::Run()
 
     int currentLevel = 1;
 
-    enum GameState { SPLASH, TITLE, GAMEPLAY, DEATH_PAUSE, WIN, DEATH };
+    enum GameState { SPLASH, TITLE, LEVEL_START,GAMEPLAY, DEATH_PAUSE, WIN, DEATH };
+    float levelStartCounter = 0.0f;
     float deathPauseCounter = 0.0f;
     GameState currentState = SPLASH;
 
@@ -154,7 +155,26 @@ void Game::Run()
         }
         case TITLE:
         {
-            if (IsKeyPressed(KEY_ENTER)) currentState = GAMEPLAY;
+            if (IsKeyPressed(KEY_ENTER))
+            {
+                currentState = LEVEL_START;
+                levelStartCounter = 2.0f;
+                isPlaying = false;
+            }
+            break;
+        }
+        case LEVEL_START:
+        {
+            //UpdateMusicStream(music);
+
+            levelStartCounter -= deltaTime;
+
+            if (levelStartCounter <= 0)
+            {
+                currentState = GAMEPLAY;
+                isPlaying = false;
+            }
+            
             break;
         }
         case GAMEPLAY:
@@ -263,9 +283,10 @@ void Game::Run()
                     }
                     else
                     {
+                        currentState = LEVEL_START;
+                        levelStartCounter = 2.0f;
                         isPlaying = false;
                     }
-                    goto gameplay_end;
                 }
             }
 
@@ -321,7 +342,6 @@ void Game::Run()
             if (camera.target.x > mapWidth - halfWidth) camera.target.x = mapWidth - halfWidth;
             if (camera.target.y > mapHeight - halfHeight) camera.target.y = mapHeight - halfHeight;
 
-        gameplay_end:;
             break;
         }
         case DEATH_PAUSE:
@@ -334,8 +354,9 @@ void Game::Run()
             {
                if (player.GetCurrentHp() > 0)
                {
+                   currentState = LEVEL_START;
+                   levelStartCounter = 2.0f;
                    isPlaying = false;
-                   currentState = GAMEPLAY;
                }
                else
                {
@@ -371,6 +392,12 @@ void Game::Run()
         {
             DrawTextureEx(titleScreen, { 350, 0 }, 0, 3.5, WHITE);
             DrawText("Presiona ENTER para comenzar", 500, 850, 25, WHITE);
+            break;
+        }
+        case LEVEL_START:
+        {
+            ClearBackground(BLACK);
+            DrawText(TextFormat("Level: %d", currentLevel), GetScreenWidth() / 2 - 100, GetScreenHeight() / 2, 30, WHITE);
             break;
         }
         case GAMEPLAY:
