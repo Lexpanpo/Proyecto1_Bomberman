@@ -44,28 +44,28 @@ void Player::UpdatePlayer(Map& map, float deltaTime,static Sound soundArray[], M
         rect.x += playerSpeed;
         mirando = 1; // Derecha
         isMoving = true;
-        PlaySound(soundArray[0]);
+        //PlaySound(soundArray[0]);
     }
     if (IsKeyDown(KEY_LEFT))
     {
         rect.x -= playerSpeed;
         mirando = 2; // Izquierda
         isMoving = true;
-        PlaySound(soundArray[0]);
+        //PlaySound(soundArray[0]);
     }
     if (IsKeyDown(KEY_DOWN))
     {
         rect.y += playerSpeed;
         mirando = 0; // Abajo
         isMoving = true;
-        PlaySound(soundArray[1]);
+        //PlaySound(soundArray[1]);
     }
     if (IsKeyDown(KEY_UP))
     {
         rect.y -= playerSpeed;
         mirando = 3; // Arriba
         isMoving = true;
-        PlaySound(soundArray[1]);
+        //PlaySound(soundArray[1]);
     }
     if (IsKeyDown(KEY_SPACE))
     {
@@ -152,6 +152,29 @@ void Player::UpdatePlayer(Map& map, float deltaTime,static Sound soundArray[], M
         bombs.push_back(Bomb(bombPos, bombRange));
     }
 
+    if (isMoving && state == P_ALIVE)
+    {
+        walkingSoundTimer -= deltaTime;
+
+        if (walkingSoundTimer <= 0.0f)
+        {    
+            if (mirando == 1 || mirando == 2)
+            {
+                PlaySound(soundArray[0]);
+                walkingSoundTimer = walkingSoundInterval;
+            }
+            else if (mirando == 0 || mirando == 3)
+            {
+                PlaySound(soundArray[1]);
+                walkingSoundTimer = walkingSoundInterval;
+            }
+        }       
+    }
+    else
+    {
+        walkingSoundTimer = 0.0f;
+    }
+
     for (int i = 0; i < bombs.size();)
     {
         if (bombs[i].UpdateState(deltaTime, map, soundArray))
@@ -180,7 +203,7 @@ void Player::DrawPlayer(Texture2D bomberman, Texture2D bomba)
     Rectangle bombermanPosYtamaño = { rect.x, rect.y, 16*2, 16*2 };
     DrawTexturePro(bomberman, bombermanRecorte, bombermanPosYtamaño, {0,0}, 0, WHITE);
 
-    DrawRectangleLines(rect.x, rect.y, rect.width, rect.height, BLACK); //  Debug para ver los colliders del jugador
+    //DrawRectangleLines(rect.x, rect.y, rect.width, rect.height, BLACK); //  Debug para ver los colliders del jugador
 }
 
 Vector2 Player::GetPlayerPos()

@@ -22,8 +22,6 @@ public:
 
 	Rectangle GetRect() const;
 
-	//void Update(float delta) const;
-
 private:
 
 	Vector2 pos;

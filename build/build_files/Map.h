@@ -50,7 +50,7 @@ private:
 	bool doorSpawned; 
 	Vector2 doorPos;
 	Rectangle sprite_status{ 16,0 };
-	float doorSpawnChance = 0.2f; // 0.2 = 20% || Modificar para ajustarlo
+	float doorSpawnChance = 0.15f; // 0.2 = 20% || Modificar para ajustarlo
 
 	vector<AnimatingBlock> animatingBlocks;
 	float blockFrameSpeed = 0.1f;
@@ -58,8 +58,7 @@ private:
 	vector<PowerUp> activePowerUps;
 	int powerUpsSpawned = 0;
 	const int maxPowerUps = 3; // Maximo de PowerUps por nivel
-	float powerUpsSpawnChance = 0.3f; // 0.3 = 30% || Modificar para ajustarlo
-
+	float powerUpsSpawnChance = 0.2f; // 0.3 = 30% || Modificar para ajustarlo
 };
 
 

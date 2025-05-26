@@ -126,11 +126,9 @@ void Enemy::Draw(Texture2D enemyTexture) const
 {
 	if (state != DEAD)
 	{
-        //Rectangle destRect = { pos.x, pos.y, 40, 40 };
         DrawTexturePro(enemyTexture, spriteStatus, this->rect, { 0,0 }, 0, WHITE);
-		//DrawRectangleRec(rect, PURPLE);
-        DrawRectangleLines(rect.x, rect.y, rect.width, rect.height, RED); //  Debug para ver los colliders del jugador
 
+        //DrawRectangleLines(rect.x, rect.y, rect.width, rect.height, RED); //  Debug para ver los colliders del jugador
 	}
 }
 

@@ -57,6 +57,9 @@ private:
 	int currentFrame = 1;
 	int maxBombs = 1;
 
+	float walkingSoundTimer = 0.0f;
+	const float walkingSoundInterval = 0.25f;
+
 	int bombRange = 1;
 	bool hasFlamePass = false;
 

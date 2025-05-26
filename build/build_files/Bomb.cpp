@@ -104,8 +104,7 @@ void Bomb::DrawBomb(Texture2D bomba) const
 	Rectangle bombaPosYtamaño = { pos.x, pos.y, 20*2, 20*2 };
 	DrawTexturePro(bomba, bombaRecorte, bombaPosYtamaño, { 0,0 }, 0, WHITE);
 
-	DrawRectangleLines(pos.x, pos.y, 40, 40, YELLOW); //  Debug para ver los colliders de las bombas
-
+	//DrawRectangleLines(pos.x, pos.y, 40, 40, YELLOW); //  Debug para ver los colliders de las bombas
 }
 
 Rectangle Bomb::GetRect() const
@@ -113,13 +112,3 @@ Rectangle Bomb::GetRect() const
 	return { pos.x, pos.y, 40.0f, 40.0f };
 }
 
-//void Bomb::Update(float delta) const
-//{
-//	animationTimer += delta;
-//
-//	if (animationTimer >= framespeed)
-//	{
-//		currentFrame = (currentFrame + 1) % 2;
-//		animationTimer = 0.0f;
-//	}
-//}
