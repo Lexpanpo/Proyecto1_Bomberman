@@ -20,4 +20,5 @@ Clear each maze-like stage by defeating all enemies using bombs, then find the h
 * Collect power-ups hidden in blocks to increase your abilities.
 
 Use the arrow keys to move Bomberman up, down, left, and right. 
-Press space to place a bomb. The ENTER key is used to start the game.
+Press space to place a bomb. The ENTER key is used to start or close the game.
+The key C erases all the soft blocks from the map, aswell as the key K kills all the enemies in the level. Lastly, the key P inflicts self-damage to the player.
