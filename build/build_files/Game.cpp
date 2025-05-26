@@ -90,7 +90,7 @@ void SpawnEnemiesForLevel(int level, Map& map, vector<Enemy>& enemies) // Funció
     }
 }
 
-void LoadLevel(int level, Player& player, Map& map, vector<Enemy>& enemies, bool& gameplayInitialized) // Función para cargar/reiniciar un nivel
+void LoadLevel(int level, Player& player, Map& map, vector<Enemy>& enemies, bool& gameplayInitialized, float& timer, bool& pointsFlag) // Función para cargar/reiniciar un nivel
 {
     cout << "CARGANDO NIVEL " << level << endl;
     player.SetPlayerPos();
@@ -99,6 +99,8 @@ void LoadLevel(int level, Player& player, Map& map, vector<Enemy>& enemies, bool
     SpawnEnemiesForLevel(level, map, enemies);
     explosions.clear();
     gameplayInitialized = true;
+    timer = 200.0f;
+    pointsFlag = true;
 }
 
 void Game::Run()
@@ -110,6 +112,9 @@ void Game::Run()
     bool isPlaying = false;
 
     int currentLevel = 1;
+
+    float levelTimer = 200.0f;
+    bool canEarnPoints = true;
 
     enum GameState { SPLASH, TITLE, LEVEL_START,GAMEPLAY, DEATH_PAUSE, WIN, DEATH };
     float levelStartCounter = 0.0f;
@@ -181,7 +186,21 @@ void Game::Run()
         {
             if (!isPlaying)
             {
-                LoadLevel(currentLevel, player, map, enemies, isPlaying);
+                LoadLevel(currentLevel, player, map, enemies, isPlaying, levelTimer, canEarnPoints);
+            }
+
+            if (levelTimer > 0 && player.GetState() == P_ALIVE)
+            {
+                levelTimer -= deltaTime;
+
+                if (levelTimer <= 0)
+                {
+                    levelTimer = 0;
+                    if (canEarnPoints)
+                    {
+                        canEarnPoints = false;
+                    }
+                }
             }
 
             player.UpdatePlayer(map, deltaTime,soundArray);
@@ -223,9 +242,12 @@ void Game::Run()
                 }
                 for (Enemy& enemy : enemies)
                 {
-                    if (enemy.IsAlive() && CheckCollisionRecs(e.GetExplosionRect(), enemy.GetRect()))
+                    if (enemy.GetState() == EnemyState::ALIVE && CheckCollisionRecs(e.GetExplosionRect(), enemy.GetRect()))
                     {
-                        score += enemy.GetScoreValue();
+                        if (canEarnPoints)
+                        {
+                            score += enemy.GetScoreValue();
+                        }
                         enemy.Kill();
                     }
                 }
@@ -435,7 +457,8 @@ void Game::Run()
 
             EndMode2D();
 
-            DrawText(TextFormat("Level: %d", currentLevel), 20, 20, 30, WHITE);
+           // DrawText(TextFormat("Level: %d", currentLevel), 20, 20, 30, WHITE);
+           DrawText(TextFormat("Time: %03d", (int)levelTimer), 20, 20, 30, WHITE);
 
             DrawText(TextFormat("Score: %06d", score), GetScreenWidth() / 2 - 100, 20, 30, WHITE);
 
@@ -478,7 +501,8 @@ void Game::Run()
 
             EndMode2D();
 
-            DrawText(TextFormat("Level: %d", currentLevel), 20, 20, 30, WHITE);
+            //DrawText(TextFormat("Level: %d", currentLevel), 20, 20, 30, WHITE);
+            DrawText(TextFormat("Time: %03d", (int)levelTimer), 20, 20, 30, WHITE);
 
             DrawText(TextFormat("Score: %06d", score), GetScreenWidth() / 2 - 100, 20, 30, WHITE);
 
