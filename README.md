@@ -1,6 +1,6 @@
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
+<!DOCTYPE html>
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Bomberman Remake - UPC</title>
   <style>
@@ -67,8 +67,8 @@
 </head>
 <body>
   <header>
-    <h1>Bomberman Remake - UPC</h1>
-    <p><strong>University Project - Team UPC</strong></p>
+    <h1>Bomberman NES Recreation</h1>
+    <p><strong>University Project - eldiablo UPC</strong></p>
   </header>
 
   <section>
@@ -133,7 +133,7 @@
     <h2>Download the Game</h2>
     <p><a href="ENLACE_A_TU_ZIP">👉 Download the latest build (.zip)</a></p>
     <p>Compatible with Windows. Unzip and run <code>Bomberman.exe</code>.<br>
-    Supports keyboard and gamepad.</p>
+    Supports keyboard.</p>
   </section>
 </body>
 </html>
