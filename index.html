@@ -15,10 +15,11 @@
             padding: 20px;
             /* SE HA AÑADIDO UN DEGRADADO OSCURO PARA MEJORAR LEGIBILIDAD Y SE HA CENTRADO LA IMAGEN */
             background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('https://images.gog.com/70b1ed191e53ae94f0ae3cc1071dc8a85647b47ccfe2f32ec909532c80732d00_glx_vertical_cover.webp?namespace=gamesdb');
-            background-size: cover;
+            background-size: contain;
             background-repeat: no-repeat;
             background-attachment: fixed;
             background-position: center center;
+            line-height: 1.6;
         }
 
         header {
@@ -39,6 +40,10 @@
             border: 2px solid #fff200;
             box-shadow: 0px 0px 10px #fff200;
         }
+
+        p, li {
+        letter-spacing: 1.5px;
+    }
 
         h1, h2 {
             color: #ffffff;
