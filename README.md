@@ -12,7 +12,7 @@
       color: #fff200;
       margin: 0;
       padding: 20px;
-      background-image: url('https://i.imgur.com/5r1e0Cz.png');
+      background-image: url('https://images.gog.com/70b1ed191e53ae94f0ae3cc1071dc8a85647b47ccfe2f32ec909532c80732d00_glx_vertical_cover.webp?namespace=gamesdb');
       background-size: cover;
       background-repeat: no-repeat;
       background-attachment: fixed;
@@ -73,8 +73,8 @@
 
   <section>
     <h2>Welcome</h2>
-    <p>This project is a faithful remake of <strong>Bomberman</strong> developed in <strong>C++</strong> using the <strong>Raylib</strong> library as part of our university coursework at <strong>UPC</strong>.</p>
-    <p><em>🎮 Student project — no commercial intent. Enjoy the nostalgia!</em></p>
+    <p>This project is a faithful recreation of <strong>Bomberman</strong> developed in <strong>C++</strong> mainly using the <strong>Raylib</strong> library as part of our university coursework at <strong>UPC</strong>.</p>
+    <p><em>This is a student project — no commercial intent. Enjoy the nostalgia!</em></p>
   </section>
 
   <section>
@@ -84,54 +84,48 @@
       <li>Strategic bomb placement to defeat enemies</li>
       <li>Maze layout with destructible walls</li>
       <li>Enemies with basic AI</li>
-      <li>Power-ups (bomb range, extra bomb)</li>
+      <li>Power-ups (bomb range, extra bomb, esxtra speed, explosion immunity)</li>
       <li>Collision detection and game states</li>
     </ul>
     <p><strong>Win:</strong> Eliminate all enemies or reach the exit<br>
-       <strong>Lose:</strong> Run out of lives or get hit by an explosion</p>
+       <strong>Lose:</strong> Run out of lives</p>
   </section>
 
   <section>
     <h2>Debug Features</h2>
     <ul>
-      <li>Toggleable hitboxes and collision zones</li>
-      <li>Visual overlays for bomb range and enemy paths</li>
+      <li>Destroy every softblock <strong>(C Key)</strong> </li>
+      <li>Kill all enemies <strong>(K Key)</strong> </li>  
+      <li>Player self damage <strong>(P Key)</strong> </li>      
+      <li>Visual overlays for player, bombs and enemies hitboxes</li>
     </ul>
   </section>
 
   <section>
     <h2>Meet the Team</h2>
     <ul>
-      <li><strong>[Name 1]:</strong> Lead Programmer, Bomb Mechanics</li>
-      <li><strong>[Name 2]:</strong> Level Design & Enemy AI</li>
-      <li><strong>[Name 3]:</strong> UI, Power-Up System & Debug Tools</li>
+      <li><strong>[Andrea Vélez]:</strong> MODIFICAR</li>
+      <li><strong>[Pol Cuenca]:</strong> MODIFICAR</li>
+      <li><strong>[Dani Castillero]</li>
     </ul>
     <p>Students of Game Design and Programming at UPC.</p>
   </section>
 
-  <section>
-    <h2>Individual Contributions</h2>
-    <ul>
-      <li><strong>[Name 1]:</strong> Bomb logic, movement, collisions (⏱️ X hours)</li>
-      <li><strong>[Name 2]:</strong> Maze design, destructibles, AI (⏱️ Y hours)</li>
-      <li><strong>[Name 3]:</strong> UI, power-ups, debug overlays (⏱️ Z hours)</li>
-    </ul>
-  </section>
 
   <section>
-    <h2>Gameplay & Debug Video</h2>
+    <h2>Gameplay Video</h2>
     <iframe src="https://www.youtube.com/embed/YOUR_VIDEO_ID" allowfullscreen></iframe>
     <p>Includes:</p>
     <ul>
-      <li>Intro: UPC logo, team credits</li>
-      <li>Gameplay: bomb mechanics, enemy interaction</li>
-      <li>Debug: hitboxes, AI paths, bomb ranges</li>
+      <li>Intro: UPC logo, team members</li>
+      <li>Gameplay: interactions with enemies and powerups, bombs mechanic and win/lose mechanic </li>
+      <li>Debug: hitboxes and more</li>
     </ul>
   </section>
 
   <section>
-    <h2>Download the Game</h2>
-    <p><a href="ENLACE_A_TU_ZIP">👉 Download the latest build (.zip)</a></p>
+    <h2>Game Download</h2>
+    <p><a href="ENLACE_A_TU_ZIP">Download the latest build (.zip)</a></p>
     <p>Compatible with Windows. Unzip and run <code>Bomberman.exe</code>.<br>
     Supports keyboard.</p>
   </section>
